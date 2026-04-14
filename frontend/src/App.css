@@ -1,0 +1,20 @@
+/* Panoptyc - Dark Theme Styles */
+.App {
+    min-height: 100vh;
+    background-color: #0a0a0a;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in-up {
+    animation: fadeInUp 0.6s ease forwards;
+}
