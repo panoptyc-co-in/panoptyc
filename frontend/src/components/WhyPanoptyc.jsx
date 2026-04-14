@@ -9,10 +9,10 @@ const WhyPanoptyc = () => {
     <section className="py-24 !bg-[#FFFFFF]" style={{ backgroundColor: "#0f1419" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <span className="inline-block text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-4" style={{ color: "#EF4444", background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}>
+          <span className="inline-block uppercase text-xs font-bold tracking-widest !mb-[0px] !pt-[4px] !pb-[4px] !pl-[12px] !pr-[12px] !rounded-none !text-[#EF4444] !bg-[rgba(239,68,68,0)]" style={{ color: "#EF4444", background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}>
             What We Do
           </span>
-          <h2 className="text-4xl lg:text-5xl font-extrabold text-white mb-4">Why Panoptyc?</h2>
+          <h2 className="text-4xl lg:text-5xl font-extrabold mb-4 !text-[#0E1628]">Why Panoptyc?</h2>
           <p className="text-lg max-w-2xl mx-auto" style={{ color: "#9CA3AF" }}>
             Grocers and retail operators turn to Panoptyc to solve their biggest loss prevention challenges
           </p>
@@ -24,7 +24,7 @@ const WhyPanoptyc = () => {
             return (
               <div
                 key={i}
-                className="group p-8 rounded-2xl transition-all duration-300 hover:-translate-y-1"
+                className="group transition-all duration-300 hover:-translate-y-1 p-8 rounded-2xl !bg-[#FBFCFD]"
                 style={{
                   background: "rgba(255,255,255,0.03)",
                   border: "1px solid rgba(255,255,255,0.08)"
@@ -44,7 +44,7 @@ const WhyPanoptyc = () => {
 
                   <Icon className="w-7 h-7" style={{ color: "#EF4444" }} />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-3">{item.title}</h3>
+                <h3 className="text-xl font-bold mb-3 !text-[#0E1628]">{item.title}</h3>
                 <p className="text-sm leading-relaxed mb-4" style={{ color: "#9CA3AF" }}>
                   {item.description}
                 </p>
