@@ -3,31 +3,31 @@ import { Edit3, User, FileText, Rocket } from "lucide-react";
 
 const HowToJoin = ({ onApply }) => {
   const steps = [
-    {
-      step: "01",
-      icon: Edit3,
-      title: "Apply Online",
-      description: "Fill the application form with your basic details. It only takes 2 minutes.",
-    },
-    {
-      step: "02",
-      icon: User,
-      title: "Complete Profile",
-      description: "Set up your profile with personal details, education info, and passport photo.",
-    },
-    {
-      step: "03",
-      icon: FileText,
-      title: "Sign Agreement",
-      description: "Review and sign the employment agreement digitally on our platform.",
-    },
-    {
-      step: "04",
-      icon: Rocket,
-      title: "Start Working",
-      description: "Receive your employee code and begin your paid training immediately.",
-    },
-  ];
+  {
+    step: "01",
+    icon: Edit3,
+    title: "Apply Online",
+    description: "Fill the application form with your basic details. It only takes 2 minutes."
+  },
+  {
+    step: "02",
+    icon: User,
+    title: "Complete Profile",
+    description: "Set up your profile with personal details, education info, and passport photo."
+  },
+  {
+    step: "03",
+    icon: FileText,
+    title: "Sign Agreement",
+    description: "Review and sign the employment agreement digitally on our platform."
+  },
+  {
+    step: "04",
+    icon: Rocket,
+    title: "Start Working",
+    description: "Receive your employee code and begin your paid training immediately."
+  }];
+
 
   return (
     <section className="py-24 !bg-[#FFFFFF]" style={{ backgroundColor: "#FAFAFA" }}>
@@ -54,7 +54,7 @@ const HowToJoin = ({ onApply }) => {
                 <div key={idx} className="text-center">
                   {/* Icon */}
                   <div className="relative inline-block mb-6">
-                    <div className="w-24 h-24 rounded-full bg-red-50 flex items-center justify-center mx-auto relative z-10">
+                    <div className="w-24 h-24 flex items-center justify-center relative z-10 mx-auto !rounded-[9px] !shadow-sm !bg-[#FFFFFF]">
                       <IconComponent className="w-10 h-10 text-red-400" strokeWidth={1.5} />
                     </div>
                   </div>
@@ -71,14 +71,14 @@ const HowToJoin = ({ onApply }) => {
                   <p className="text-sm text-gray-500 leading-relaxed">
                     {stepItem.description}
                   </p>
-                </div>
-              );
+                </div>);
+
             })}
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>);
+
 };
 
 export default HowToJoin;
