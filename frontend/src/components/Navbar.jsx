@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Menu, X, Key, Lock, User, Navigation2 } from "lucide-react";
 
-const Navbar = ({ onApply, onEmployeeLogin }) => {
+const Navbar = ({ onApply, onProfileSetup }) => {
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -76,7 +76,7 @@ const Navbar = ({ onApply, onEmployeeLogin }) => {
               Passkey Order
             </button>
             <button
-              onClick={onEmployeeLogin}
+              onClick={() => navigate("/employee-login")}
               className={`flex items-center gap-1.5 px-3.5 py-2 text-sm transition-all duration-200 rounded-lg ${
                 scrolled
                   ? "text-cyan-600 hover:text-cyan-700 hover:bg-cyan-50"
@@ -91,7 +91,7 @@ const Navbar = ({ onApply, onEmployeeLogin }) => {
           {/* Desktop CTA buttons */}
           <div className="hidden md:flex items-center gap-2">
             <button 
-              onClick={() => navigate("/profile-setup")}
+              onClick={onProfileSetup}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                 scrolled
                   ? "text-gray-700 border border-gray-300 hover:border-gray-400 hover:bg-gray-100"

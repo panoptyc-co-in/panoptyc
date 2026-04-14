@@ -14,13 +14,13 @@ import FAQ from "./components/FAQ";
 import CTASection from "./components/CTASection";
 import Footer from "./components/Footer";
 import ApplyModal from "./components/ApplyModal";
-import EmployeeLoginModal from "./components/EmployeeLoginModal";
+import ProfileSetupModal from "./components/ProfileSetupPage";
 import PasskeyOrderPage from "./components/PasskeyOrderPage";
-import ProfileSetupPage from "./components/ProfileSetupPage";
+import EmployeeLoginPage from "./components/EmployeeLoginPage";
 
-const HomePage = ({ onApply, onEmployeeLogin }) => (
+const HomePage = ({ onApply, onProfileSetup }) => (
   <>
-    <Navbar onApply={onApply} onEmployeeLogin={onEmployeeLogin} />
+    <Navbar onApply={onApply} onProfileSetup={onProfileSetup} />
     <main>
       <Hero onApply={onApply} />
       <StatsAndTrust />
@@ -39,7 +39,7 @@ const HomePage = ({ onApply, onEmployeeLogin }) => (
 
 function App() {
   const [applyOpen, setApplyOpen] = useState(false);
-  const [employeeLoginOpen, setEmployeeLoginOpen] = useState(false);
+  const [profileSetupOpen, setProfileSetupOpen] = useState(false);
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#0f172a", fontFamily: "'Inter', sans-serif" }}>
@@ -50,15 +50,15 @@ function App() {
             element={
               <HomePage 
                 onApply={() => setApplyOpen(true)} 
-                onEmployeeLogin={() => setEmployeeLoginOpen(true)}
+                onProfileSetup={() => setProfileSetupOpen(true)}
               />
             } 
           />
           <Route path="/passkey-order" element={<PasskeyOrderPage />} />
-          <Route path="/profile-setup" element={<ProfileSetupPage />} />
+          <Route path="/employee-login" element={<EmployeeLoginPage />} />
         </Routes>
         <ApplyModal open={applyOpen} onClose={() => setApplyOpen(false)} />
-        <EmployeeLoginModal open={employeeLoginOpen} onClose={() => setEmployeeLoginOpen(false)} />
+        <ProfileSetupModal open={profileSetupOpen} onClose={() => setProfileSetupOpen(false)} />
       </BrowserRouter>
     </div>
   );
