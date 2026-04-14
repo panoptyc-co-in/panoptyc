@@ -12,14 +12,14 @@ const Testimonials = () => {
             <span className="inline-block text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-4" style={{ color: "#EF4444", background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}>
               Social Proof
             </span>
-            <h2 className="text-4xl lg:text-5xl font-extrabold text-white mb-4">Hear From Our Customers</h2>
+            <h2 className="text-4xl lg:text-5xl font-extrabold mb-4 !text-[#0E1628]">Hear From Our Customers</h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, i) =>
             <div
               key={i}
-              className="p-8 rounded-2xl transition-all duration-200 hover:bg-white/5"
+              className="transition-all duration-200 hover:bg-white/5 p-8 rounded-2xl !bg-[#FBFCFD]"
               style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
 
                 <div className="flex gap-1 mb-4">
