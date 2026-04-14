@@ -37,86 +37,91 @@ const HowToJoin = ({ onApply }) => {
           </p>
         </div>
 
-        {/* Steps Container */}
-        <div className="relative max-w-5xl mx-auto">
-          {/* Horizontal connecting line at bottom */}
+        {/* Test tube style steps */}
+        <div className="relative max-w-6xl mx-auto">
+          {/* Horizontal pink bar at bottom */}
           <div 
-            className="absolute left-0 right-0 h-1" 
+            className="absolute bottom-0 left-0 right-0 rounded-full"
             style={{ 
-              bottom: '0px',
-              background: 'linear-gradient(90deg, rgba(244,114,182,0.3) 0%, rgba(244,114,182,0.8) 50%, rgba(244,114,182,0.3) 100%)',
-              marginLeft: '12.5%',
-              marginRight: '12.5%',
-              width: '75%'
+              height: '12px',
+              background: 'linear-gradient(90deg, rgba(251,207,232,0.5) 0%, #fbcfe8 25%, #fbcfe8 75%, rgba(251,207,232,0.5) 100%)',
+              marginLeft: '6%',
+              marginRight: '6%'
             }} 
           />
           
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-0">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 pb-6">
             {steps.map((stepItem, idx) => (
-              <div key={idx} className="flex flex-col items-center px-4">
-                {/* Step number circle at top */}
+              <div key={idx} className="flex flex-col items-center relative">
+                {/* Pink rounded cap at top */}
                 <div 
-                  className="w-14 h-14 rounded-full flex items-center justify-center mb-8 relative z-20"
+                  className="w-32 h-8 rounded-t-full mb-1"
                   style={{
-                    background: 'linear-gradient(135deg, #f472b6 0%, #ec4899 100%)',
-                    boxShadow: '0 4px 12px rgba(236,72,153,0.3)'
+                    background: 'linear-gradient(180deg, #fbcfe8 0%, rgba(251,207,232,0.6) 100%)',
+                  }}
+                />
+                
+                {/* Main white pill/tube body */}
+                <div 
+                  className="relative bg-white rounded-[4px] flex flex-col items-center"
+                  style={{
+                    width: '128px',
+                    height: '520px',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                    border: '1px solid rgba(0,0,0,0.02)'
                   }}
                 >
-                  <span className="text-white font-bold text-lg">{stepItem.step}</span>
-                </div>
-                
-                {/* Vertical white pill/bar */}
-                <div className="relative w-full max-w-[180px] mb-12">
-                  {/* Vertical connecting line inside pill */}
+                  {/* Red vertical line (liquid inside tube) */}
                   <div 
-                    className="absolute left-1/2 top-0 w-1 -translate-x-1/2"
+                    className="absolute left-1/2 -translate-x-1/2 rounded-full"
                     style={{
-                      height: '350px',
-                      background: 'linear-gradient(180deg, rgba(244,114,182,0.4) 0%, rgba(244,114,182,0.2) 50%, rgba(244,114,182,0.1) 100%)'
+                      top: '60px',
+                      width: '20px',
+                      height: '280px',
+                      background: 'linear-gradient(180deg, #ef4444 0%, #dc2626 50%, #b91c1c 100%)',
+                      boxShadow: '0 2px 8px rgba(239,68,68,0.3)'
                     }}
                   />
                   
-                  {/* White pill container */}
-                  <div 
-                    className="relative bg-white rounded-[32px] p-6 pt-8 pb-12 shadow-sm"
-                    style={{
-                      minHeight: '350px',
-                      border: '1px solid rgba(0,0,0,0.04)'
-                    }}
-                  >
-                    {/* Icon placeholder - you can add lucide icons here */}
-                    <div className="flex justify-center mb-6">
-                      <div 
-                        className="w-16 h-16 rounded-full flex items-center justify-center"
-                        style={{ backgroundColor: 'rgba(244,114,182,0.1)' }}
-                      >
-                        <svg className="w-8 h-8" style={{ color: '#ec4899' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          {idx === 0 && <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />}
-                          {idx === 1 && <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />}
-                          {idx === 2 && <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />}
-                          {idx === 3 && <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />}
-                        </svg>
-                      </div>
+                  {/* Content inside pill */}
+                  <div className="relative z-10 flex flex-col items-center w-full px-4 pt-8">
+                    {/* Icon */}
+                    <div 
+                      className="w-12 h-12 rounded-full flex items-center justify-center mb-4"
+                      style={{ backgroundColor: 'rgba(251,207,232,0.3)' }}
+                    >
+                      <svg className="w-6 h-6" style={{ color: '#ef4444' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        {idx === 0 && <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />}
+                        {idx === 1 && <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />}
+                        {idx === 2 && <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />}
+                        {idx === 3 && <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />}
+                      </svg>
                     </div>
                     
                     {/* Step label */}
-                    <div className="text-center mb-3">
-                      <span className="text-xs font-bold uppercase tracking-wider" style={{ color: '#ec4899' }}>
-                        STEP {stepItem.step}
-                      </span>
+                    <div className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: '#ef4444' }}>
+                      STEP {stepItem.step}
                     </div>
                     
                     {/* Title */}
-                    <h3 className="text-center text-lg font-bold mb-3" style={{ color: '#0E1628' }}>
+                    <h3 className="text-center text-sm font-bold mb-2" style={{ color: '#0E1628' }}>
                       {stepItem.title}
                     </h3>
                     
                     {/* Description */}
-                    <p className="text-center text-sm leading-relaxed" style={{ color: '#6B7280' }}>
+                    <p className="text-center text-xs leading-relaxed" style={{ color: '#9CA3AF' }}>
                       {stepItem.description}
                     </p>
                   </div>
                 </div>
+                
+                {/* Pink rounded cap at bottom */}
+                <div 
+                  className="w-32 h-8 rounded-b-full mt-1"
+                  style={{
+                    background: 'linear-gradient(0deg, #fbcfe8 0%, rgba(251,207,232,0.6) 100%)',
+                  }}
+                />
               </div>
             ))}
           </div>
