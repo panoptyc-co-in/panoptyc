@@ -10,7 +10,7 @@ const HowToJoin = ({ onApply }) => {
           <span className="inline-block text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-4" style={{ color: "#EF4444", background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}>
             Getting Started
           </span>
-          <h2 className="text-4xl lg:text-5xl font-extrabold text-white mb-4">How to Join Panoptyc</h2>
+          <h2 className="text-4xl lg:text-5xl font-extrabold mb-4 !text-[#0E1628]">How to Join Panoptyc</h2>
           <p className="text-lg max-w-xl mx-auto" style={{ color: "#9CA3AF" }}>
             A simple 4-step process to start your career
           </p>
@@ -20,14 +20,14 @@ const HowToJoin = ({ onApply }) => {
           {howToJoinSteps.map((step, i) =>
           <div
             key={i}
-            className="relative p-8 rounded-2xl transition-all duration-300 hover:-translate-y-1"
+            className="relative transition-all duration-300 hover:-translate-y-1 p-8 rounded-2xl !shadow-lg !bg-[#FBFCFD]"
             style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
 
               <div className="absolute -top-4 left-8 w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg" style={{ background: "#EF4444", color: "white" }}>
                 {step.step}
               </div>
               <div className="mt-6">
-                <h3 className="text-lg font-bold text-white mb-3">{step.title}</h3>
+                <h3 className="text-lg font-bold mb-3 !text-[#0E1628]">{step.title}</h3>
                 <p className="text-sm leading-relaxed" style={{ color: "#9CA3AF" }}>
                   {step.description}
                 </p>
