@@ -13,9 +13,9 @@ const StatsAndTrust = () => {
   return (
     <>
       {/* Stats Section */}
-      <section className="py-12 md:py-16 bg-white border-b border-slate-100">
+      <section className="py-12 md:py-16" style={{ backgroundColor: "#1a1f2e", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-slate-500 text-xs uppercase tracking-widest mb-8 font-medium">
+          <p className="text-center text-gray-400 text-xs uppercase tracking-widest mb-8 font-medium">
             Our Impact in Numbers
           </p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
@@ -24,13 +24,14 @@ const StatsAndTrust = () => {
               return (
                 <div
                   key={i}
-                  className="text-center p-4 md:p-6 rounded-xl bg-slate-50 border border-slate-100 hover:shadow-md transition-shadow"
+                  className="text-center p-4 md:p-6 rounded-xl transition-all duration-200 hover:bg-white/5"
+                  style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}
                 >
                   <Icon className={`w-6 h-6 ${stat.iconColor} mx-auto mb-2`} />
-                  <div className="text-2xl md:text-4xl font-bold text-slate-900 font-['Outfit']">
+                  <div className="text-2xl md:text-4xl font-bold text-white font-['Outfit']">
                     {stat.value}
                   </div>
-                  <div className="text-slate-500 text-xs md:text-sm mt-1">{stat.label}</div>
+                  <div className="text-gray-400 text-xs md:text-sm mt-1">{stat.label}</div>
                 </div>
               );
             })}
@@ -39,16 +40,16 @@ const StatsAndTrust = () => {
       </section>
 
       {/* Trust Badges Section */}
-      <section className="py-8 md:py-10 bg-slate-50 border-b border-slate-100">
+      <section className="py-8 md:py-10" style={{ backgroundColor: "#14181f", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-slate-400 text-xs uppercase tracking-widest mb-6">
+          <p className="text-center text-gray-500 text-xs uppercase tracking-widest mb-6">
             Trusted By Industry Leaders
           </p>
           <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16">
             {trustPartners.map((partner) => (
               <div
                 key={partner.name}
-                className="grayscale hover:grayscale-0 opacity-50 hover:opacity-100 transition-all duration-300"
+                className="grayscale hover:grayscale-0 opacity-40 hover:opacity-100 transition-all duration-300"
               >
                 <img
                   src={partner.logo}

@@ -9,16 +9,16 @@ import { faqItems } from "../mock";
 
 const FAQ = () => {
   return (
-    <section id="faq" className="py-24 bg-white">
+    <section id="faq" className="py-24" style={{ backgroundColor: "#0f1419" }}>
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <span className="inline-block text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-4 text-red-600 bg-red-50 border border-red-200">
+          <span className="inline-block text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-4" style={{ color: "#EF4444", background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}>
             Questions?
           </span>
-          <h2 className="text-4xl lg:text-5xl font-extrabold text-slate-900 mb-4">
+          <h2 className="text-4xl lg:text-5xl font-extrabold text-white mb-4">
             Frequently Asked Questions
           </h2>
-          <p className="text-lg text-slate-600">
+          <p className="text-lg" style={{ color: "#9CA3AF" }}>
             Everything you need to know about working with Panoptyc
           </p>
         </div>
@@ -28,16 +28,18 @@ const FAQ = () => {
             <AccordionItem
               key={i}
               value={`item-${i}`}
-              className="rounded-2xl overflow-hidden bg-slate-50 border border-slate-200"
+              className="rounded-2xl overflow-hidden"
+              style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}
             >
               <AccordionTrigger
-                className="px-6 py-5 text-left font-semibold text-slate-900 hover:no-underline"
+                className="px-6 py-5 text-left font-semibold text-white hover:no-underline"
                 style={{ fontSize: "1rem" }}
               >
                 {item.question}
               </AccordionTrigger>
               <AccordionContent
-                className="px-6 pb-5 text-sm leading-relaxed text-slate-600"
+                className="px-6 pb-5 text-sm leading-relaxed"
+                style={{ color: "#9CA3AF" }}
               >
                 {item.answer}
               </AccordionContent>

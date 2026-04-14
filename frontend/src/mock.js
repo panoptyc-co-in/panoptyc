@@ -45,6 +45,27 @@ export const features = [
   },
 ];
 
+export const whyPanoptyc = [
+  {
+    title: "Cashier Shrink",
+    description: "AI-powered detection identifies cashier theft patterns including sweethearting, no-scans, and under-ringing across thousands of POS transactions daily.",
+    stat: "₹2.5L+ saved per store",
+    icon: "ShoppingCart",
+  },
+  {
+    title: "Self-Checkout Theft",
+    description: "Our platform monitors self-checkout stations in real-time, catching skip-scans, ticket switching, and walkouts before losses accumulate.",
+    stat: "60% theft reduction",
+    icon: "AlertTriangle",
+  },
+  {
+    title: "Complete Visibility",
+    description: "Retailers know shrink numbers but not where it comes from. Panoptyc pinpoints exact sources of loss with video evidence and analytics.",
+    stat: "30% shrink reduction",
+    icon: "Eye",
+  },
+];
+
 export const industries = [
   {
     title: "Retail Cashier",
@@ -79,12 +100,12 @@ export const industries = [
 ];
 
 export const roleResponsibilities = [
-  "Monitor live and recorded video feeds from retail stores across the US",
-  "Identify suspicious activities, theft incidents, and policy violations",
-  "Document and report incidents using Panoptyc's AI-powered platform",
-  "Maintain strict confidentiality of all surveillance data and client information",
-  "Analyze patterns and trends to help stores reduce shrink proactively",
-  "Collaborate with US-based loss prevention teams for incident resolution",
+  { text: "Monitor live and recorded video feeds from retail stores across the US", icon: "Monitor" },
+  { text: "Identify suspicious activities, theft incidents, and policy violations", icon: "Eye" },
+  { text: "Document and report incidents using Panoptyc's AI-powered platform", icon: "FileText" },
+  { text: "Maintain strict confidentiality of all surveillance data and client information", icon: "Shield" },
+  { text: "Analyze patterns and trends to help stores reduce shrink proactively", icon: "TrendingUp" },
+  { text: "Collaborate with US-based loss prevention teams for incident resolution", icon: "Users" },
 ];
 
 export const requirements = [
@@ -176,26 +197,46 @@ export const steps = [
   },
 ];
 
+export const howToJoinSteps = [
+  {
+    step: "01",
+    title: "Apply Online",
+    description: "Fill the application form with your basic details. It only takes 2 minutes.",
+  },
+  {
+    step: "02",
+    title: "Complete Profile",
+    description: "Set up your profile with personal details, education info, and passport photo.",
+  },
+  {
+    step: "03",
+    title: "Sign Agreement",
+    description: "Review and sign the employment agreement digitally on our platform.",
+  },
+  {
+    step: "04",
+    title: "Start Working",
+    description: "Receive your employee code and begin your paid training immediately.",
+  },
+];
+
 export const testimonials = [
   {
-    quote: "Before Panoptyc, investigating potential theft meant retrieving DVRs and spending hours reviewing footage. Now our supervisors can focus on growing our business instead of chasing shrink.",
+    text: "Before Panoptyc, investigating potential theft meant retrieving DVRs and spending hours reviewing footage. Now our supervisors can focus on growing our business instead of chasing shrink.",
     name: "Jeff Hemp",
-    role: "Store Operations Director",
-    company: "Verified Customer",
+    role: "Store Operations Director · Verified Customer",
     initials: "JH",
   },
   {
-    quote: "Panoptyc's AI platform has transformed how we handle loss prevention. The real-time alerts and video evidence make it easy to take action immediately. We've seen a 35% reduction in shrink.",
+    text: "Panoptyc's AI platform has transformed how we handle loss prevention. The real-time alerts and video evidence make it easy to take action immediately. We've seen a 35% reduction in shrink.",
     name: "Sarah Mitchell",
-    role: "VP Loss Prevention",
-    company: "Retail Chain",
+    role: "VP Loss Prevention · Retail Chain",
     initials: "SM",
   },
   {
-    quote: "The remote analysts at Panoptyc are incredibly thorough. They catch things our in-store cameras alone never would. It's like having an extra set of expert eyes on every transaction.",
+    text: "The remote analysts at Panoptyc are incredibly thorough. They catch things our in-store cameras alone never would. It's like having an extra set of expert eyes on every transaction.",
     name: "David Chen",
-    role: "Regional Manager",
-    company: "Grocery Network",
+    role: "Regional Manager · Grocery Network",
     initials: "DC",
   },
 ];

@@ -19,18 +19,17 @@ const Footer = ({ onApply }) => {
   };
 
   return (
-    <footer className="bg-slate-50 border-t border-slate-200">
+    <footer style={{ backgroundColor: "#0a0e14", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
           {/* Brand */}
           <div className="text-center lg:text-left">
-            <div
-              className="text-2xl font-extrabold tracking-tight mb-2 text-red-500"
-              style={{ fontFamily: "'Outfit', sans-serif" }}
-            >
-              panoptyc
-            </div>
-            <p className="text-sm text-slate-600">
+            <img 
+              src="https://customer-assets.emergentagent.com/job_remote-lead-hiring/artifacts/yyk8ba47_Panoptyc-Logo-HiRes.jpg" 
+              alt="Panoptyc" 
+              className="h-8 w-auto mb-2 mx-auto lg:mx-0"
+            />
+            <p className="text-sm" style={{ color: "#6B7280" }}>
               AI-Powered Retail Loss Prevention<br />
               <span className="text-xs">Protecting 20,000+ stores worldwide</span>
             </p>
@@ -42,7 +41,8 @@ const Footer = ({ onApply }) => {
               <button
                 key={link.label}
                 onClick={() => scrollTo(link.href)}
-                className="text-sm transition-colors duration-200 hover:text-slate-900 text-slate-600"
+                className="text-sm transition-colors duration-200 hover:text-white"
+                style={{ color: "#6B7280" }}
               >
                 {link.label}
               </button>
@@ -52,7 +52,10 @@ const Footer = ({ onApply }) => {
           {/* CTA */}
           <button
             onClick={onApply}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-xl font-semibold text-white text-sm transition-all duration-200 hover:scale-105 bg-red-500 hover:bg-red-600"
+            className="flex items-center gap-2 px-6 py-2.5 rounded-xl font-semibold text-white text-sm transition-all duration-200 hover:scale-105"
+            style={{ backgroundColor: "#EF4444" }}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#DC2626")}
+            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#EF4444")}
           >
             <Navigation2 className="w-4 h-4" />
             Apply Now
@@ -60,7 +63,8 @@ const Footer = ({ onApply }) => {
         </div>
 
         <div
-          className="mt-10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs border-t border-slate-200 text-slate-500"
+          className="mt-10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs"
+          style={{ borderTop: "1px solid rgba(255,255,255,0.06)", color: "#4B5563" }}
         >
           <p>&copy; {new Date().getFullYear()} Panoptyc Inc. All rights reserved.</p>
           <div className="flex items-center gap-1">
@@ -69,7 +73,7 @@ const Footer = ({ onApply }) => {
               href="https://panoptyc.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-slate-700 transition-colors flex items-center gap-1"
+              className="hover:text-gray-400 transition-colors flex items-center gap-1"
             >
               panoptyc.com <ExternalLink className="w-3 h-3" />
             </a>

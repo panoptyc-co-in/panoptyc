@@ -1,55 +1,56 @@
 import React from "react";
-import { ShoppingCart, TriangleAlert, Eye, TrendingUp } from "lucide-react";
+import { ShoppingCart, AlertTriangle, Eye } from "lucide-react";
+import { whyPanoptyc } from "../mock";
 
-const features = [
-  {
-    title: "Cashier Shrink",
-    description: "AI-powered detection identifies cashier theft patterns including sweethearting, no-scans, and under-ringing across thousands of POS transactions daily.",
-    highlight: "\u20b92.5L+ saved per store",
-    icon: ShoppingCart,
-  },
-  {
-    title: "Self-Checkout Theft",
-    description: "Our platform monitors self-checkout stations in real-time, catching skip-scans, ticket switching, and walkouts before losses accumulate.",
-    highlight: "60% theft reduction",
-    icon: TriangleAlert,
-  },
-  {
-    title: "Complete Visibility",
-    description: "Retailers know shrink numbers but not where it comes from. Panoptyc pinpoints exact sources of loss with video evidence and analytics.",
-    highlight: "30% shrink reduction",
-    icon: Eye,
-  },
-];
+const iconMap = { ShoppingCart, AlertTriangle, Eye };
 
 const WhyPanoptyc = () => {
   return (
-    <section id="about" className="py-16 md:py-24 bg-white">
+    <section className="py-24" style={{ backgroundColor: "#0f1419" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <span className="text-red-500 font-medium text-xs uppercase tracking-widest">What We Do</span>
-          <h2 className="text-2xl md:text-4xl font-bold text-slate-900 mt-3 font-['Outfit']">Why Panoptyc?</h2>
-          <p className="text-slate-500 text-sm md:text-base mt-2 max-w-2xl mx-auto">
+        <div className="text-center mb-16">
+          <span className="inline-block text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-4" style={{ color: "#EF4444", background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}>
+            What We Do
+          </span>
+          <h2 className="text-4xl lg:text-5xl font-extrabold text-white mb-4">Why Panoptyc?</h2>
+          <p className="text-lg max-w-2xl mx-auto" style={{ color: "#9CA3AF" }}>
             Grocers and retail operators turn to Panoptyc to solve their biggest loss prevention challenges
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6 md:gap-8">
-          {features.map((feat, i) => {
-            const Icon = feat.icon;
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {whyPanoptyc.map((item, i) => {
+            const Icon = iconMap[item.icon] || ShoppingCart;
             return (
               <div
                 key={i}
-                className="group bg-slate-50 rounded-2xl p-6 md:p-8 border border-slate-100 hover:shadow-lg hover:border-red-100 transition-all duration-300 hover:-translate-y-1"
+                className="group p-8 rounded-2xl transition-all duration-300 hover:-translate-y-1"
+                style={{
+                  background: "rgba(255,255,255,0.03)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "rgba(239,68,68,0.05)";
+                  e.currentTarget.style.borderColor = "rgba(239,68,68,0.25)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "rgba(255,255,255,0.03)";
+                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)";
+                }}
               >
-                <div className="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-red-500 transition-colors">
-                  <Icon className="w-6 h-6 text-red-500 group-hover:text-white transition-colors" />
+                <div
+                  className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5"
+                  style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}
+                >
+                  <Icon className="w-7 h-7" style={{ color: "#EF4444" }} />
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 mb-2 font-['Outfit']">{feat.title}</h3>
-                <p className="text-slate-500 text-sm leading-relaxed mb-4">{feat.description}</p>
-                <div className="inline-flex items-center gap-1.5 bg-green-50 text-green-700 px-3 py-1 rounded-full text-xs font-semibold">
-                  <TrendingUp className="w-3 h-3" />
-                  {feat.highlight}
+                <h3 className="text-xl font-bold text-white mb-3">{item.title}</h3>
+                <p className="text-sm leading-relaxed mb-4" style={{ color: "#9CA3AF" }}>
+                  {item.description}
+                </p>
+                <div className="inline-flex items-center gap-1.5 text-xs font-semibold" style={{ color: "#4ADE80" }}>
+                  <span>→</span>
+                  <span>{item.stat}</span>
                 </div>
               </div>
             );

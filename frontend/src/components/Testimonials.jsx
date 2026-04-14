@@ -5,42 +5,39 @@ import { testimonials, customers } from "../mock";
 const Testimonials = () => {
   return (
     <>
-      {/* Testimonials */}
-      <section className="py-16 md:py-24 bg-slate-50">
+      {/* Testimonials Section */}
+      <section className="py-24" style={{ backgroundColor: "#1a1f2e" }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <span className="text-red-500 font-medium text-xs uppercase tracking-widest">Social Proof</span>
-            <h2 className="text-2xl md:text-4xl font-bold text-slate-900 mt-3 font-['Outfit']">
-              Hear From Our Customers
-            </h2>
+          <div className="text-center mb-16">
+            <span className="inline-block text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-4" style={{ color: "#EF4444", background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}>
+              Social Proof
+            </span>
+            <h2 className="text-4xl lg:text-5xl font-extrabold text-white mb-4">Hear From Our Customers</h2>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
-            {testimonials.map((t, i) => (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {testimonials.map((testimonial, i) => (
               <div
                 key={i}
-                className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-slate-100 hover:shadow-lg transition-shadow flex flex-col"
+                className="p-8 rounded-2xl transition-all duration-200 hover:bg-white/5"
+                style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}
               >
-                {/* Stars */}
-                <div className="flex items-center gap-1 mb-4">
-                  {[...Array(5)].map((_, si) => (
-                    <Star key={si} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                <div className="flex gap-1 mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                   ))}
                 </div>
-
-                <Quote className="w-8 h-8 text-red-100 mb-3" />
-
-                <p className="text-slate-600 text-sm leading-relaxed mb-6 italic flex-1">
-                  &ldquo;{t.quote}&rdquo;
+                <Quote className="w-8 h-8 text-gray-600 mb-4" />
+                <p className="text-sm leading-relaxed mb-6 italic" style={{ color: "#D1D5DB" }}>
+                  {testimonial.text}
                 </p>
-
-                <div className="flex items-center gap-3 pt-4 border-t border-slate-100">
-                  <div className="w-10 h-10 bg-slate-900 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
-                    {t.initials}
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white" style={{ background: "#1f2937" }}>
+                    {testimonial.initials}
                   </div>
                   <div>
-                    <p className="font-semibold text-slate-900 text-sm">{t.name}</p>
-                    <p className="text-slate-500 text-xs">{t.role} &middot; {t.company}</p>
+                    <div className="font-semibold text-white text-sm">{testimonial.name}</div>
+                    <div className="text-xs" style={{ color: "#6B7280" }}>{testimonial.role}</div>
                   </div>
                 </div>
               </div>
@@ -49,17 +46,17 @@ const Testimonials = () => {
         </div>
       </section>
 
-      {/* Customer logos */}
-      <section className="py-10 bg-white border-y border-slate-100">
+      {/* Customers Section */}
+      <section className="py-10" style={{ backgroundColor: "#14181f" }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-slate-400 text-xs uppercase tracking-widest mb-6">
+          <p className="text-center text-gray-500 text-xs uppercase tracking-widest mb-6">
             Some of Our Customers
           </p>
-          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16">
+          <div className="flex flex-wrap justify-center items-center gap-12">
             {customers.map((customer) => (
               <div
                 key={customer}
-                className="text-slate-300 font-bold text-lg md:text-xl font-['Outfit'] hover:text-slate-500 transition-colors cursor-default"
+                className="text-gray-600 text-lg font-semibold opacity-50 hover:opacity-100 transition-opacity"
               >
                 {customer}
               </div>

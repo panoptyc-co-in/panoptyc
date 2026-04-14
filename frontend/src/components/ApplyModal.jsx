@@ -15,7 +15,8 @@ import {
 } from "./ui/select";
 import { CheckCircle, Navigation2 } from "lucide-react";
 
-const inputCls = "w-full rounded-xl px-3.5 py-2.5 text-sm text-slate-900 placeholder-slate-400 outline-none transition-all duration-200 focus:ring-2 focus:ring-red-500/40 border border-slate-300 bg-white";
+const inputCls = "w-full rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-gray-500 outline-none transition-all duration-200 focus:ring-2 focus:ring-red-500/40" ;
+const inputStyle = { background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" };
 
 const ApplyModal = ({ open, onClose }) => {
   const [formData, setFormData] = useState({
@@ -49,14 +50,15 @@ const ApplyModal = ({ open, onClose }) => {
   return (
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent
-        className="max-w-lg max-h-[92vh] overflow-y-auto bg-white border border-slate-200"
+        className="max-w-lg max-h-[92vh] overflow-y-auto text-white"
+        style={{ background: "#1a1f2e", border: "1px solid rgba(255,255,255,0.1)" }}
       >
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-slate-900">
+          <DialogTitle className="text-2xl font-bold text-white">
             Apply to{" "}
-            <span className="text-red-500">Panoptyc</span>
+            <span style={{ color: "#EF4444" }}>Panoptyc</span>
           </DialogTitle>
-          <DialogDescription className="text-slate-600 text-sm">
+          <DialogDescription className="text-gray-400 text-sm">
             Remote Video Surveillance Analyst — ₹35,000/month · 100% Work From Home
           </DialogDescription>
         </DialogHeader>
@@ -64,17 +66,19 @@ const ApplyModal = ({ open, onClose }) => {
         {submitted ? (
           <div className="py-10 text-center">
             <div
-              className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-5 bg-green-50 border border-green-200"
+              className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-5"
+              style={{ background: "rgba(34,197,94,0.12)", border: "1px solid rgba(34,197,94,0.3)" }}
             >
-              <CheckCircle className="w-10 h-10 text-green-600" />
+              <CheckCircle className="w-10 h-10" style={{ color: "#4ADE80" }} />
             </div>
-            <h3 className="text-xl font-bold text-slate-900 mb-2">Application Submitted!</h3>
-            <p className="text-slate-600 mb-6 max-w-xs mx-auto">
+            <h3 className="text-xl font-bold text-white mb-2">Application Submitted!</h3>
+            <p className="text-gray-400 mb-6 max-w-xs mx-auto">
               Thank you, {formData.fullName || "there"}! We'll review your application and reach out within 2–3 business days.
             </p>
             <button
               onClick={handleClose}
-              className="px-8 py-3 rounded-xl font-semibold text-white transition-all duration-200 hover:scale-105 bg-red-500 hover:bg-red-600"
+              className="px-8 py-3 rounded-xl font-semibold text-white transition-all duration-200 hover:scale-105"
+              style={{ backgroundColor: "#EF4444" }}
             >
               Close
             </button>
@@ -84,7 +88,7 @@ const ApplyModal = ({ open, onClose }) => {
             {/* Full name + Phone */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wide text-slate-600 mb-1.5">Full Name *</label>
+                <label className="block text-xs font-semibold uppercase tracking-wide text-gray-400 mb-1.5">Full Name *</label>
                 <input
                   type="text"
                   required
@@ -92,10 +96,11 @@ const ApplyModal = ({ open, onClose }) => {
                   onChange={(e) => setFormData((p) => ({ ...p, fullName: e.target.value }))}
                   placeholder="Your full name"
                   className={inputCls}
+                  style={inputStyle}
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wide text-slate-600 mb-1.5">Phone *</label>
+                <label className="block text-xs font-semibold uppercase tracking-wide text-gray-400 mb-1.5">Phone *</label>
                 <input
                   type="tel"
                   required
@@ -103,13 +108,14 @@ const ApplyModal = ({ open, onClose }) => {
                   onChange={(e) => setFormData((p) => ({ ...p, phone: e.target.value }))}
                   placeholder="+91 XXXXX XXXXX"
                   className={inputCls}
+                  style={inputStyle}
                 />
               </div>
             </div>
 
             {/* Email */}
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wide text-slate-600 mb-1.5">Email Address *</label>
+              <label className="block text-xs font-semibold uppercase tracking-wide text-gray-400 mb-1.5">Email Address *</label>
               <input
                 type="email"
                 required
@@ -117,13 +123,14 @@ const ApplyModal = ({ open, onClose }) => {
                 onChange={(e) => setFormData((p) => ({ ...p, email: e.target.value }))}
                 placeholder="your@email.com"
                 className={inputCls}
+                style={inputStyle}
               />
             </div>
 
             {/* City + State */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wide text-slate-600 mb-1.5">City *</label>
+                <label className="block text-xs font-semibold uppercase tracking-wide text-gray-400 mb-1.5">City *</label>
                 <input
                   type="text"
                   required
@@ -131,10 +138,11 @@ const ApplyModal = ({ open, onClose }) => {
                   onChange={(e) => setFormData((p) => ({ ...p, city: e.target.value }))}
                   placeholder="Mumbai"
                   className={inputCls}
+                  style={inputStyle}
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wide text-slate-600 mb-1.5">State *</label>
+                <label className="block text-xs font-semibold uppercase tracking-wide text-gray-400 mb-1.5">State *</label>
                 <input
                   type="text"
                   required
@@ -142,22 +150,24 @@ const ApplyModal = ({ open, onClose }) => {
                   onChange={(e) => setFormData((p) => ({ ...p, state: e.target.value }))}
                   placeholder="Maharashtra"
                   className={inputCls}
+                  style={inputStyle}
                 />
               </div>
             </div>
 
             {/* Education */}
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wide text-slate-600 mb-1.5">Highest Education *</label>
+              <label className="block text-xs font-semibold uppercase tracking-wide text-gray-400 mb-1.5">Highest Education *</label>
               <Select required value={formData.education} onValueChange={set("education")}>
                 <SelectTrigger
-                  className="rounded-xl text-sm border-slate-300 bg-white text-slate-900"
+                  className="rounded-xl text-sm text-white"
+                  style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: formData.education ? "white" : "#6B7280" }}
                 >
                   <SelectValue placeholder="Select education level" />
                 </SelectTrigger>
-                <SelectContent className="bg-white border border-slate-200">
+                <SelectContent style={{ background: "#1a1a1a", border: "1px solid rgba(255,255,255,0.1)" }}>
                   {["10th Pass", "12th Pass", "Graduate", "Post Graduate"].map((opt) => (
-                    <SelectItem key={opt} value={opt} className="text-slate-900 hover:bg-slate-100">
+                    <SelectItem key={opt} value={opt} className="text-white hover:bg-white/10">
                       {opt}
                     </SelectItem>
                   ))}
@@ -167,16 +177,17 @@ const ApplyModal = ({ open, onClose }) => {
 
             {/* Internet speed */}
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wide text-slate-600 mb-1.5">Internet Speed *</label>
+              <label className="block text-xs font-semibold uppercase tracking-wide text-gray-400 mb-1.5">Internet Speed *</label>
               <Select required value={formData.internetSpeed} onValueChange={set("internetSpeed")}>
                 <SelectTrigger
-                  className="rounded-xl text-sm border-slate-300 bg-white text-slate-900"
+                  className="rounded-xl text-sm text-white"
+                  style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: formData.internetSpeed ? "white" : "#6B7280" }}
                 >
                   <SelectValue placeholder="Select internet speed" />
                 </SelectTrigger>
-                <SelectContent className="bg-white border border-slate-200">
+                <SelectContent style={{ background: "#1a1a1a", border: "1px solid rgba(255,255,255,0.1)" }}>
                   {["10–25 Mbps", "25–50 Mbps", "50–100 Mbps", "100+ Mbps"].map((opt) => (
-                    <SelectItem key={opt} value={opt} className="text-slate-900 hover:bg-slate-100">
+                    <SelectItem key={opt} value={opt} className="text-white hover:bg-white/10">
                       {opt}
                     </SelectItem>
                   ))}
@@ -185,8 +196,8 @@ const ApplyModal = ({ open, onClose }) => {
             </div>
 
             {/* Night shift acknowledgment */}
-            <div className="rounded-xl p-3.5 bg-red-50 border border-red-200">
-              <p className="text-xs text-red-600">
+            <div className="rounded-xl p-3.5" style={{ background: "rgba(239,68,68,0.07)", border: "1px solid rgba(239,68,68,0.2)" }}>
+              <p className="text-xs" style={{ color: "#FCA5A5" }}>
                 <span className="font-semibold">Note:</span> This role requires working US night hours (approx. 6:30 PM – 6:30 AM IST). Please ensure you are comfortable with this schedule.
               </p>
             </div>
@@ -194,7 +205,10 @@ const ApplyModal = ({ open, onClose }) => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3.5 rounded-xl font-semibold text-white transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600"
+              className="w-full py-3.5 rounded-xl font-semibold text-white transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
+              style={{ backgroundColor: "#EF4444" }}
+              onMouseEnter={(e) => !loading && (e.currentTarget.style.backgroundColor = "#DC2626")}
+              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#EF4444")}
             >
               {loading ? (
                 <>
