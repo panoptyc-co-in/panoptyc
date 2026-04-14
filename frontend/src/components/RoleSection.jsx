@@ -75,7 +75,7 @@ const RoleSection = ({ onApply }) => {
             {/* Main Image */}
             <div className="relative rounded-3xl overflow-hidden shadow-2xl">
               <img
-                src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=800&q=80"
+                src="https://images.pexels.com/photos/3987020/pexels-photo-3987020.jpeg?auto=compress&cs=tinysrgb&w=600"
                 alt="Remote worker"
                 className="w-full h-auto"
                 style={{ aspectRatio: "3/4", objectFit: "cover" }}
