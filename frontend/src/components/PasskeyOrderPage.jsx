@@ -26,6 +26,70 @@ const PasskeyOrderPage = () => {
     "https://customer-assets.emergentagent.com/job_e9775db5-71a4-4634-9fae-4002de641895/artifacts/xo6la2v5_711ALvLp1CL._SX679_.jpg",
   ];
 
+  const keyFeatures = [
+    {
+      icon: "⚡",
+      title: "USB-C + NFC",
+      description: "Plug in via USB-C or tap on NFC-enabled devices"
+    },
+    {
+      icon: "🛡️",
+      title: "Multi-Protocol Security",
+      description: "FIDO2, WebAuthn, U2F, Smart Card, OTP, OpenPGP"
+    },
+    {
+      icon: "🌐",
+      title: "Widely Compatible",
+      description: "Works with Google, Microsoft, Apple, password managers & 100s more"
+    },
+    {
+      icon: "🔐",
+      title: "Passwordless Login",
+      description: "Hardware-bound passkey for the strongest authentication"
+    },
+    {
+      icon: "📱",
+      title: "Works with Phones",
+      description: "NFC tap authentication on Android and iPhone"
+    },
+    {
+      icon: "🏅",
+      title: "Made in Sweden & USA",
+      description: "Tamper-resistant, waterproof, crushproof - no batteries needed"
+    }
+  ];
+
+  const compatibility = [
+    "WebAuthn",
+    "FIDO (CTAP 1, 2, 2.1)",
+    "Universal Second Factor (U2F)",
+    "Smart Card / PIV",
+    "Yubico OTP",
+    "OATH - HOTP (Event)",
+    "OATH - TOTP (Time)",
+    "OpenPGP",
+    "Secure Static Passwords"
+  ];
+
+  const appCategories = [
+    {
+      title: "EMAIL & PRODUCTIVITY",
+      apps: "Microsoft, Apple, Google, Dropbox, Proton"
+    },
+    {
+      title: "PASSWORD MANAGERS",
+      apps: "1Password, Bitwarden, KeePass, LastPass"
+    },
+    {
+      title: "PERSONAL FINANCE",
+      apps: "Vanguard, Coinbase, KeyBank, Kraken"
+    },
+    {
+      title: "SOCIAL",
+      apps: "Instagram, Facebook, X, YouTube"
+    }
+  ];
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -124,10 +188,10 @@ const PasskeyOrderPage = () => {
             </div>
 
             {/* Product Title */}
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            <h1 className="text-3xl font-bold text-gray-900 mb-3" style={{ fontFamily: "'Inter', sans-serif" }}>
               Yubico YubiKey 5C NFC
             </h1>
-            <p className="text-gray-600 text-sm mb-4">
+            <p className="text-gray-500 text-base mb-4" style={{ fontFamily: "'Inter', sans-serif" }}>
               Hardware Security Key - USB-C + NFC | Multi-Protocol | FIDO2/WebAuthn
             </p>
 
@@ -135,11 +199,72 @@ const PasskeyOrderPage = () => {
             <div className="flex items-center gap-2 mb-6">
               <div className="flex">
                 {[...Array(4)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                  <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
                 ))}
-                <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" style={{ clipPath: "inset(0 50% 0 0)" }} />
+                <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" style={{ clipPath: "inset(0 50% 0 0)" }} />
               </div>
-              <span className="text-sm text-gray-600">4.5 (6,070 ratings)</span>
+              <span className="text-base text-gray-500">4.5 (6,070 ratings)</span>
+            </div>
+
+            {/* Price */}
+            <div className="mb-6">
+              <div className="flex items-baseline gap-3 mb-3">
+                <span className="text-4xl font-bold text-gray-900">₹2,000</span>
+                <span className="text-xl text-gray-400 line-through">₹6,109</span>
+                <span className="px-2.5 py-1 bg-red-100 text-red-600 text-sm font-bold rounded">
+                  67% OFF
+                </span>
+              </div>
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-start gap-3">
+                <Truck className="w-6 h-6 text-green-600 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-base font-bold text-green-700 mb-1">Cash on Delivery - ₹2,000</p>
+                  <p className="text-sm text-green-600">Pay when you receive the product at your doorstep</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Key Features */}
+            <div className="mb-8">
+              <h3 className="text-xl font-bold text-gray-900 mb-5" style={{ fontFamily: "'Inter', sans-serif" }}>Key Features</h3>
+              <div className="space-y-4">
+                {keyFeatures.map((feature, idx) => (
+                  <div key={idx} className="flex items-start gap-4">
+                    <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+                      <span className="text-2xl">{feature.icon}</span>
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-gray-900 text-base mb-1">{feature.title}</h4>
+                      <p className="text-sm text-gray-500">{feature.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Advanced Compatibility */}
+            <div className="mb-8">
+              <h3 className="text-xl font-bold text-gray-900 mb-5" style={{ fontFamily: "'Inter', sans-serif" }}>Advanced Compatibility</h3>
+              <div className="space-y-0">
+                {compatibility.map((item, idx) => (
+                  <div key={idx} className="flex items-center justify-between py-3 border-b border-gray-100">
+                    <span className="text-base text-gray-600">{item}</span>
+                    <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center">
+                      <Check className="w-4 h-4 text-green-600" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* App Categories */}
+            <div className="grid grid-cols-2 gap-4">
+              {appCategories.map((category, idx) => (
+                <div key={idx} className="bg-green-50 rounded-lg p-4 border border-green-100">
+                  <h4 className="text-xs font-bold text-green-700 mb-2 uppercase tracking-wide">{category.title}</h4>
+                  <p className="text-sm text-green-600 font-medium">{category.apps}</p>
+                </div>
+              ))}
             </div>
           </div>
 
