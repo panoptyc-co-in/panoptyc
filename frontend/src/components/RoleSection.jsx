@@ -6,7 +6,7 @@ const iconMap = { Monitor, Eye, FileText, Shield, TrendingUp, Users };
 
 const RoleSection = ({ onApply }) => {
   return (
-    <section id="role" className="py-24" style={{ backgroundColor: "#0f1419" }}>
+    <section id="role" className="py-24 !bg-[#FFFFFF]" style={{ backgroundColor: "#0f1419" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* Left - Image */}
@@ -15,8 +15,8 @@ const RoleSection = ({ onApply }) => {
               src="https://images.pexels.com/photos/3987020/pexels-photo-3987020.jpeg?auto=compress&cs=tinysrgb&w=600"
               alt="Remote worker"
               className="rounded-2xl shadow-2xl"
-              style={{ border: "1px solid rgba(255,255,255,0.1)" }}
-            />
+              style={{ border: "1px solid rgba(255,255,255,0.1)" }} />
+
             <div className="mt-6 inline-flex items-center gap-4 rounded-2xl px-5 py-4" style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)" }}>
               <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#EF4444" }}>
                 <span className="text-white font-bold text-xl">₹</span>
@@ -50,16 +50,16 @@ const RoleSection = ({ onApply }) => {
                       <Icon className="w-4 h-4" style={{ color: "#EF4444" }} />
                     </div>
                     <p className="text-sm" style={{ color: "#D1D5DB" }}>{resp.text}</p>
-                  </div>
-                );
+                  </div>);
+
               })}
             </div>
 
             <button
               onClick={onApply}
               className="px-8 py-3.5 rounded-xl font-semibold text-white transition-all duration-200 hover:scale-105"
-              style={{ backgroundColor: "#EF4444" }}
-            >
+              style={{ backgroundColor: "#EF4444" }}>
+
               Apply Now
             </button>
           </div>
@@ -75,23 +75,23 @@ const RoleSection = ({ onApply }) => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {requirements.map((req, i) => (
-              <div
-                key={i}
-                className="p-6 rounded-2xl transition-all duration-200 hover:bg-white/5"
-                style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}
-              >
+            {requirements.map((req, i) =>
+            <div
+              key={i}
+              className="p-6 rounded-2xl transition-all duration-200 hover:bg-white/5"
+              style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
+
                 <h4 className="text-sm font-bold uppercase tracking-wide mb-2" style={{ color: "#EF4444" }}>
                   {req.title}
                 </h4>
                 <p className="text-sm" style={{ color: "#D1D5DB" }}>{req.description}</p>
               </div>
-            ))}
+            )}
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>);
+
 };
 
 export default RoleSection;
