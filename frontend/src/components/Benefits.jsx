@@ -1,14 +1,14 @@
 import React from "react";
 import {
-  IndianRupee, Home, BookOpen, TrendingUp, Users, Cpu
-} from "lucide-react";
+  IndianRupee, Home, BookOpen, TrendingUp, Users, Cpu } from
+"lucide-react";
 import { benefits } from "../mock";
 
 const iconMap = { IndianRupee, Home, BookOpen, TrendingUp, Users, Cpu };
 
 const Benefits = ({ onApply }) => {
   return (
-    <section id="benefits" className="py-24" style={{ backgroundColor: "#1a1f2e" }}>
+    <section id="benefits" className="py-24 !bg-[#1A1F2E]" style={{ backgroundColor: "#1a1f2e" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <span className="inline-block text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-4" style={{ color: "#EF4444", background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}>
@@ -31,7 +31,7 @@ const Benefits = ({ onApply }) => {
                 className="group p-7 rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
                 style={{
                   background: "rgba(255,255,255,0.03)",
-                  border: "1px solid rgba(255,255,255,0.08)",
+                  border: "1px solid rgba(255,255,255,0.08)"
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.background = "rgba(239,68,68,0.05)";
@@ -40,25 +40,25 @@ const Benefits = ({ onApply }) => {
                 onMouseLeave={(e) => {
                   e.currentTarget.style.background = "rgba(255,255,255,0.03)";
                   e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)";
-                }}
-              >
+                }}>
+
                 <div
                   className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5"
-                  style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}
-                >
+                  style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}>
+
                   <Icon className="w-7 h-7" style={{ color: "#EF4444" }} />
                 </div>
                 <h3 className="text-lg font-bold text-white mb-2">{benefit.title}</h3>
                 <p className="text-sm leading-relaxed" style={{ color: "#9CA3AF" }}>
                   {benefit.description}
                 </p>
-              </div>
-            );
+              </div>);
+
           })}
         </div>
       </div>
-    </section>
-  );
+    </section>);
+
 };
 
 export default Benefits;
