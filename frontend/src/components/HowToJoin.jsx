@@ -3,31 +3,31 @@ import { Edit3, User, FileText, Rocket } from "lucide-react";
 
 const HowToJoin = ({ onApply }) => {
   const steps = [
-  {
-    step: "01",
-    icon: Edit3,
-    title: "Apply Online",
-    description: "Fill the application form with your basic details. It only takes 2 minutes."
-  },
-  {
-    step: "02",
-    icon: User,
-    title: "Complete Profile",
-    description: "Set up your profile with personal details, education info, and passport photo."
-  },
-  {
-    step: "03",
-    icon: FileText,
-    title: "Sign Agreement",
-    description: "Review and sign the employment agreement digitally on our platform."
-  },
-  {
-    step: "04",
-    icon: Rocket,
-    title: "Start Working",
-    description: "Receive your employee code and begin your paid training immediately."
-  }];
-
+    {
+      step: "01",
+      icon: Edit3,
+      title: "Apply Online",
+      description: "Fill the application form with your basic details. It only takes 2 minutes."
+    },
+    {
+      step: "02",
+      icon: User,
+      title: "Complete Profile",
+      description: "Set up your profile with personal details, education info, and passport photo."
+    },
+    {
+      step: "03",
+      icon: FileText,
+      title: "Sign Agreement",
+      description: "Review and sign the employment agreement digitally on our platform."
+    },
+    {
+      step: "04",
+      icon: Rocket,
+      title: "Start Working",
+      description: "Receive your employee code and begin your paid training immediately."
+    }
+  ];
 
   return (
     <section className="py-24 !bg-[#FFFFFF]" style={{ backgroundColor: "#FAFAFA" }}>
@@ -42,43 +42,52 @@ const HowToJoin = ({ onApply }) => {
           </p>
         </div>
 
-        {/* Steps with connecting line */}
-        <div className="relative max-w-5xl mx-auto mb-12">
-          {/* Connecting Line */}
-          <div className="absolute top-12 left-0 right-0 h-0.5 bg-red-200" style={{ left: "12%", right: "12%" }} />
+        {/* Steps with vertical connecting lines */}
+        <div className="relative max-w-6xl mx-auto">
+          {/* Horizontal bottom line connecting all steps */}
+          <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-pink-200 via-red-300 to-pink-200" style={{ bottom: "40px" }} />
           
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 relative">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 relative">
             {steps.map((stepItem, idx) => {
               const IconComponent = stepItem.icon;
               return (
-                <div key={idx} className="text-center">
-                  {/* Icon */}
-                  <div className="relative inline-block mb-6">
-                    <div className="w-24 h-24 flex items-center justify-center relative z-10 mx-auto !rounded-[9px] !shadow-sm !bg-[#FFFFFF]">
-                      <IconComponent className="w-10 h-10 text-red-400" strokeWidth={1.5} />
+                <div key={idx} className="flex flex-col items-center relative">
+                  {/* Circular number badge at top */}
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-400 to-red-400 flex items-center justify-center mb-4 shadow-lg relative z-20">
+                    <span className="text-white font-bold text-sm">{stepItem.step}</span>
+                  </div>
+                  
+                  {/* Vertical connecting line */}
+                  <div className="absolute top-12 left-1/2 -translate-x-1/2 w-0.5 bg-gradient-to-b from-pink-300 via-red-200 to-pink-200" style={{ height: "calc(100% - 80px)" }} />
+                  
+                  {/* Vertical pill/capsule container */}
+                  <div className="relative z-10 bg-white rounded-[40px] px-6 py-12 shadow-sm border border-gray-100 flex flex-col items-center text-center h-full w-full max-w-[200px]">
+                    {/* Icon inside pill */}
+                    <div className="w-16 h-16 rounded-full bg-pink-50 flex items-center justify-center mb-6">
+                      <IconComponent className="w-8 h-8 text-red-400" strokeWidth={1.5} />
                     </div>
+                    
+                    {/* Step label */}
+                    <div className="text-xs font-bold uppercase tracking-wider text-red-500 mb-3">
+                      STEP {stepItem.step}
+                    </div>
+                    
+                    {/* Title */}
+                    <h3 className="text-base font-bold !text-[#0E1628] mb-3">{stepItem.title}</h3>
+                    
+                    {/* Description */}
+                    <p className="text-xs text-gray-500 leading-relaxed">
+                      {stepItem.description}
+                    </p>
                   </div>
-                  
-                  {/* Step Number */}
-                  <div className="text-xs font-bold uppercase tracking-wider text-red-500 mb-3">
-                    STEP {stepItem.step}
-                  </div>
-                  
-                  {/* Title */}
-                  <h3 className="text-lg font-bold !text-[#0E1628] mb-3">{stepItem.title}</h3>
-                  
-                  {/* Description */}
-                  <p className="text-sm text-gray-500 leading-relaxed">
-                    {stepItem.description}
-                  </p>
-                </div>);
-
+                </div>
+              );
             })}
           </div>
         </div>
       </div>
-    </section>);
-
+    </section>
+  );
 };
 
 export default HowToJoin;
