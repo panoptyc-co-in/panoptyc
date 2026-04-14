@@ -13,10 +13,31 @@ const ProfileSetupModal = ({ open, onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    await new Promise((res) => setTimeout(res, 1500));
-    setLoading(false);
-    // Mock profile setup - in real app would authenticate
-    alert("Profile setup functionality coming soon!");
+    
+    try {
+      const API_URL = process.env.REACT_APP_BACKEND_URL;
+      const response = await fetch(`${API_URL}/api/submit-profile-setup`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const result = await response.json();
+      
+      if (response.ok && result.success) {
+        alert(`✅ ${result.message}\n\nYour profile has been saved to Excel.\n\nEmail: ${result.data.email}\nSubmitted at: ${result.data.timestamp}`);
+        handleClose();
+      } else {
+        throw new Error(result.detail || 'Failed to submit profile setup');
+      }
+    } catch (error) {
+      console.error('Submission error:', error);
+      alert(`❌ Error: ${error.message}\n\nPlease try again or contact support.`);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleClose = () => {

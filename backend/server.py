@@ -66,8 +66,12 @@ async def get_status_checks():
     
     return status_checks
 
+# Import form routes
+from routes.forms import router as forms_router
+
 # Include the router in the main app
 app.include_router(api_router)
+app.include_router(forms_router)
 
 app.add_middleware(
     CORSMiddleware,
