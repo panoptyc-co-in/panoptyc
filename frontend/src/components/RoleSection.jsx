@@ -71,14 +71,14 @@ const RoleSection = ({ onApply }) => {
             <span className="inline-block text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-4" style={{ color: "#EF4444", background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}>
               What We Need
             </span>
-            <h2 className="text-4xl lg:text-5xl font-extrabold text-white">Requirements</h2>
+            <h2 className="text-4xl lg:text-5xl font-extrabold !text-[#0E1628]">Requirements</h2>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {requirements.map((req, i) =>
             <div
               key={i}
-              className="p-6 rounded-2xl transition-all duration-200 hover:bg-white/5"
+              className="transition-all duration-200 hover:bg-white/5 p-6 rounded-2xl !shadow-lg !bg-[#F8F9FA]"
               style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
 
                 <h4 className="text-sm font-bold uppercase tracking-wide mb-2" style={{ color: "#EF4444" }}>
