@@ -6,7 +6,7 @@ const iconMap = { ShoppingCart, AlertTriangle, Eye };
 
 const WhyPanoptyc = () => {
   return (
-    <section className="py-24" style={{ backgroundColor: "#0f1419" }}>
+    <section className="py-24 !bg-[#F3F4F4]" style={{ backgroundColor: "#0f1419" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <span className="inline-block text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-4" style={{ color: "#EF4444", background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}>
@@ -27,7 +27,7 @@ const WhyPanoptyc = () => {
                 className="group p-8 rounded-2xl transition-all duration-300 hover:-translate-y-1"
                 style={{
                   background: "rgba(255,255,255,0.03)",
-                  border: "1px solid rgba(255,255,255,0.08)",
+                  border: "1px solid rgba(255,255,255,0.08)"
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.background = "rgba(239,68,68,0.05)";
@@ -36,12 +36,12 @@ const WhyPanoptyc = () => {
                 onMouseLeave={(e) => {
                   e.currentTarget.style.background = "rgba(255,255,255,0.03)";
                   e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)";
-                }}
-              >
+                }}>
+
                 <div
                   className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5"
-                  style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}
-                >
+                  style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}>
+
                   <Icon className="w-7 h-7" style={{ color: "#EF4444" }} />
                 </div>
                 <h3 className="text-xl font-bold text-white mb-3">{item.title}</h3>
@@ -52,13 +52,13 @@ const WhyPanoptyc = () => {
                   <span>→</span>
                   <span>{item.stat}</span>
                 </div>
-              </div>
-            );
+              </div>);
+
           })}
         </div>
       </div>
-    </section>
-  );
+    </section>);
+
 };
 
 export default WhyPanoptyc;
