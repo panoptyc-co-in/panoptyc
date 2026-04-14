@@ -102,15 +102,10 @@ const Hero = ({ onApply }) => {
     <section
       className="relative min-h-screen flex items-center overflow-hidden"
       style={{
-        backgroundImage: "url(https://images.unsplash.com/photo-1556740758-90de374c12ad?auto=format&fit=crop&w=1920&q=80)",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundAttachment: "scroll",
+        backgroundColor: "#f8f9fa"
       }}
     >
-      {/* Multi-layer dark overlay - creates the greyish-blue dark effect */}
-      <div className="absolute inset-0" style={{ background: "rgba(15,20,35,0.92)" }} />
-      <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, rgba(20,25,40,0.8) 0%, rgba(15,20,35,0.7) 50%, rgba(20,25,40,0.8) 100%)" }} />
+      {/* No dark overlays - clean light background */}
 
       <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 pt-28">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -126,27 +121,27 @@ const Hero = ({ onApply }) => {
             </div>
 
             {/* Main heading */}
-            <h1 className="font-extrabold leading-tight text-white mb-6" style={{ fontSize: "clamp(2.5rem, 5vw, 3.75rem)", lineHeight: 1.1 }}>
+            <h1 className="font-extrabold leading-tight text-gray-900 mb-6" style={{ fontSize: "clamp(2.5rem, 5vw, 3.75rem)", lineHeight: 1.1 }}>
               Join the Team
               <br />
-              <span style={{ color: "#EF4444" }}>Protecting 20,000+</span>
+              <span className="text-red-500">Protecting 20,000+</span>
               <br />
               Retail Stores
             </h1>
 
             {/* Description */}
-            <p className="text-lg leading-relaxed mb-8 max-w-lg" style={{ color: "#D1D5DB" }}>
+            <p className="text-lg leading-relaxed mb-8 max-w-lg text-gray-700">
               Panoptyc uses AI to catch over 400,000 retail thefts per year. Be part of a revolution in loss prevention — all from the comfort of your home.
             </p>
 
             {/* Salary badge */}
-            <div className="inline-flex items-center gap-4 rounded-2xl px-5 py-4 mb-8" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}>
-              <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#EF4444" }}>
+            <div className="inline-flex items-center gap-4 rounded-2xl px-5 py-4 mb-8 bg-white border border-gray-200 shadow-sm">
+              <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 bg-red-500">
                 <span className="text-white font-bold text-xl">₹</span>
               </div>
               <div>
-                <div className="text-white text-2xl font-extrabold">₹35,000</div>
-                <div className="text-sm" style={{ color: "#9CA3AF" }}>per month + benefits</div>
+                <div className="text-gray-900 text-2xl font-extrabold">₹35,000</div>
+                <div className="text-sm text-gray-600">per month + benefits</div>
               </div>
             </div>
 
