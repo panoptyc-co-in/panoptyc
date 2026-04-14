@@ -42,7 +42,7 @@ function App() {
   const [employeeLoginOpen, setEmployeeLoginOpen] = useState(false);
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#f8f9fa", fontFamily: "'Inter', sans-serif" }}>
+    <div style={{ minHeight: "100vh", backgroundColor: "#0f172a", fontFamily: "'Inter', sans-serif" }}>
       <BrowserRouter>
         <Routes>
           <Route 

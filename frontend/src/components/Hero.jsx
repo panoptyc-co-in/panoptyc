@@ -102,10 +102,14 @@ const Hero = ({ onApply }) => {
     <section
       className="relative min-h-screen flex items-center overflow-hidden"
       style={{
-        backgroundColor: "#f8f9fa"
+        backgroundImage: "url(https://images.unsplash.com/photo-1556740758-90de374c12ad?auto=format&fit=crop&w=2000&q=80)",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundAttachment: "fixed",
       }}
     >
-      {/* No dark overlays - clean light background */}
+      {/* Dark gradient overlay */}
+      <div className="absolute inset-0" style={{ background: "linear-gradient(135deg,#0f172a,#1e293b 50%,#0f172a)", opacity: 0.95 }} />
 
       <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 pt-28">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -121,7 +125,7 @@ const Hero = ({ onApply }) => {
             </div>
 
             {/* Main heading */}
-            <h1 className="font-extrabold leading-tight text-gray-900 mb-6" style={{ fontSize: "clamp(2.5rem, 5vw, 3.75rem)", lineHeight: 1.1 }}>
+            <h1 className="font-extrabold leading-tight text-white mb-6" style={{ fontSize: "clamp(2.5rem, 5vw, 3.75rem)", lineHeight: 1.1 }}>
               Join the Team
               <br />
               <span className="text-red-500">Protecting 20,000+</span>
@@ -130,18 +134,18 @@ const Hero = ({ onApply }) => {
             </h1>
 
             {/* Description */}
-            <p className="text-lg leading-relaxed mb-8 max-w-lg text-gray-700">
+            <p className="text-lg leading-relaxed mb-8 max-w-lg text-gray-300">
               Panoptyc uses AI to catch over 400,000 retail thefts per year. Be part of a revolution in loss prevention — all from the comfort of your home.
             </p>
 
             {/* Salary badge */}
-            <div className="inline-flex items-center gap-4 rounded-2xl px-5 py-4 mb-8 bg-white border border-gray-200 shadow-sm">
+            <div className="inline-flex items-center gap-4 rounded-2xl px-5 py-4 mb-8" style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)" }}>
               <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 bg-red-500">
                 <span className="text-white font-bold text-xl">₹</span>
               </div>
               <div>
-                <div className="text-gray-900 text-2xl font-extrabold">₹35,000</div>
-                <div className="text-sm text-gray-600">per month + benefits</div>
+                <div className="text-white text-2xl font-extrabold">₹35,000</div>
+                <div className="text-sm text-gray-300">per month + benefits</div>
               </div>
             </div>
 
@@ -149,10 +153,7 @@ const Hero = ({ onApply }) => {
             <div className="flex flex-wrap gap-3 mb-8">
               <button
                 onClick={onApply}
-                className="flex items-center gap-2.5 px-7 py-3.5 rounded-xl font-semibold text-white transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg"
-                style={{ backgroundColor: "#EF4444" }}
-                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#DC2626")}
-                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#EF4444")}
+                className="flex items-center gap-2.5 px-7 py-3.5 rounded-xl font-semibold text-white transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg bg-red-500 hover:bg-red-600"
               >
                 <Navigation2 className="w-5 h-5" />
                 Apply Now
@@ -160,7 +161,7 @@ const Hero = ({ onApply }) => {
               <button
                 onClick={scrollToRole}
                 className="flex items-center gap-2.5 px-7 py-3.5 rounded-xl font-semibold text-white transition-all duration-200 hover:bg-white/10"
-                style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.18)" }}
+                style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)" }}
               >
                 Learn About Role
                 <ChevronDown className="w-5 h-5" />
@@ -172,8 +173,8 @@ const Hero = ({ onApply }) => {
               {tags.map(({ icon: Icon, label }) => (
                 <div
                   key={label}
-                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm"
-                  style={{ border: "1px solid rgba(255,255,255,0.18)", background: "rgba(255,255,255,0.05)", color: "#D1D5DB" }}
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm text-gray-300"
+                  style={{ border: "1px solid rgba(255,255,255,0.2)", background: "rgba(255,255,255,0.05)" }}
                 >
                   <Icon className="w-3.5 h-3.5" />
                   {label}
