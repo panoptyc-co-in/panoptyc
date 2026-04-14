@@ -1,97 +1,121 @@
 import React from "react";
-import { Monitor, Eye, FileText, Shield, TrendingUp, Users } from "lucide-react";
-import { roleResponsibilities, requirements } from "../mock";
-
-const iconMap = { Monitor, Eye, FileText, Shield, TrendingUp, Users };
+import { Monitor, AlertTriangle, FileText, Lock, TrendingUp, Users } from "lucide-react";
 
 const RoleSection = ({ onApply }) => {
+  const responsibilities = [
+    { 
+      icon: Monitor, 
+      text: "Monitor live and recorded video feeds from retail stores across the US",
+      color: "#EF4444"
+    },
+    { 
+      icon: AlertTriangle, 
+      text: "Identify suspicious activities, theft incidents, and policy violations",
+      color: "#F97316"
+    },
+    { 
+      icon: FileText, 
+      text: "Document and report incidents using Panoptyc's AI-powered platform",
+      color: "#EF4444"
+    },
+    { 
+      icon: Lock, 
+      text: "Maintain strict confidentiality of all surveillance data and client information",
+      color: "#EC4899"
+    },
+    { 
+      icon: TrendingUp, 
+      text: "Analyze patterns and trends to help stores reduce shrink proactively",
+      color: "#F97316"
+    },
+    { 
+      icon: Users, 
+      text: "Collaborate with US-based loss prevention teams for incident resolution",
+      color: "#EF4444"
+    },
+  ];
+
   return (
-    <section id="role" className="py-24 !bg-[#FFFFFF]" style={{ backgroundColor: "#0f1419" }}>
+    <section id="role" className="py-24 !bg-[#FFFFFF]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          {/* Left - Image */}
-          <div className="order-2 lg:order-1">
-            <img
-              src="https://images.pexels.com/photos/3987020/pexels-photo-3987020.jpeg?auto=compress&cs=tinysrgb&w=600"
-              alt="Remote worker"
-              className="rounded-2xl shadow-2xl"
-              style={{ border: "1px solid rgba(255,255,255,0.1)" }} />
-
-            <div className="mt-6 inline-flex items-center gap-4 rounded-2xl px-5 py-4" style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)" }}>
-              <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#EF4444" }}>
-                <span className="text-white font-bold text-xl">₹</span>
-              </div>
-              <div>
-                <div className="text-white text-xl font-extrabold">₹35,000/mo</div>
-                <div className="text-xs" style={{ color: "#9CA3AF" }}>Competitive salary</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Right - Content */}
-          <div className="order-1 lg:order-2">
-            <span className="inline-block text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-4" style={{ color: "#EF4444", background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}>
-              Your Role
+          {/* Left - Content */}
+          <div>
+            <span className="inline-block text-xs font-bold uppercase tracking-widest mb-4 text-red-400">
+              YOUR ROLE
             </span>
-            <h2 className="text-4xl lg:text-5xl font-extrabold text-white mb-4">
+            <h2 className="text-4xl lg:text-5xl font-extrabold !text-[#0E1628] mb-6 leading-tight">
               Remote Video Surveillance Analyst
             </h2>
-            <p className="text-lg leading-relaxed mb-8" style={{ color: "#9CA3AF" }}>
+            <p className="text-lg leading-relaxed mb-8 text-gray-600">
               As a Remote Video Surveillance Analyst, you'll be the frontline defender protecting retail stores across the United States. Using our cutting-edge AI platform, you'll monitor live feeds, catch theft in real-time, and make a direct impact on loss prevention.
             </p>
 
             {/* Responsibilities */}
-            <div className="space-y-3 mb-8">
-              {roleResponsibilities.map((resp, i) => {
-                const Icon = iconMap[resp.icon] || Monitor;
+            <div className="space-y-4">
+              {responsibilities.map((resp, i) => {
+                const Icon = resp.icon;
                 return (
-                  <div key={i} className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}>
-                      <Icon className="w-4 h-4" style={{ color: "#EF4444" }} />
+                  <div key={i} className="flex items-start gap-4">
+                    <div 
+                      className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 mt-1"
+                      style={{ backgroundColor: `${resp.color}15` }}
+                    >
+                      <Icon className="w-5 h-5" style={{ color: resp.color }} />
                     </div>
-                    <p className="text-sm" style={{ color: "#D1D5DB" }}>{resp.text}</p>
-                  </div>);
-
+                    <p className="text-base text-gray-600 leading-relaxed pt-1.5">{resp.text}</p>
+                  </div>
+                );
               })}
             </div>
-
-            <button
-              onClick={onApply}
-              className="px-8 py-3.5 rounded-xl font-semibold text-white transition-all duration-200 hover:scale-105"
-              style={{ backgroundColor: "#EF4444" }}>
-
-              Apply Now
-            </button>
-          </div>
-        </div>
-
-        {/* Requirements */}
-        <div className="mt-20">
-          <div className="text-center mb-12">
-            <span className="inline-block text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-4" style={{ color: "#EF4444", background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}>
-              What We Need
-            </span>
-            <h2 className="text-4xl lg:text-5xl font-extrabold !text-[#0E1628]">Requirements</h2>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {requirements.map((req, i) =>
-            <div
-              key={i}
-              className="transition-all duration-200 hover:bg-white/5 p-6 rounded-2xl !shadow-lg !bg-[#F8F9FA]"
-              style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
+          {/* Right - Image with floating cards */}
+          <div className="relative hidden lg:block">
+            {/* Main Image */}
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl">
+              <img
+                src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=800&q=80"
+                alt="Remote worker"
+                className="w-full h-auto"
+                style={{ aspectRatio: "3/4", objectFit: "cover" }}
+              />
+            </div>
 
-                <h4 className="text-sm font-bold uppercase tracking-wide mb-2" style={{ color: "#EF4444" }}>
-                  {req.title}
-                </h4>
-                <p className="text-sm" style={{ color: "#D1D5DB" }}>{req.description}</p>
+            {/* Salary Card - Top Right */}
+            <div 
+              className="absolute -top-4 -right-4 bg-white rounded-2xl shadow-xl p-5 flex items-center gap-4"
+              style={{ minWidth: "200px" }}
+            >
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 bg-red-50">
+                <span className="text-red-500 font-bold text-2xl">₹</span>
               </div>
-            )}
+              <div>
+                <div className="text-gray-900 text-xl font-bold">₹35,000/mo</div>
+                <div className="text-xs text-gray-500">Competitive salary</div>
+              </div>
+            </div>
+
+            {/* Remote Badge - Bottom Left */}
+            <div 
+              className="absolute -bottom-4 -left-4 bg-white rounded-2xl shadow-xl p-5 flex items-center gap-4"
+              style={{ minWidth: "220px" }}
+            >
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 bg-green-50">
+                <svg className="w-6 h-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+              </div>
+              <div>
+                <div className="text-gray-900 text-base font-bold">100% Remote</div>
+                <div className="text-xs text-gray-500">Work from anywhere in India</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </section>);
-
+    </section>
+  );
 };
 
 export default RoleSection;
