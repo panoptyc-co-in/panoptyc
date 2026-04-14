@@ -6,52 +6,41 @@ const Testimonials = () => {
   return (
     <>
       {/* Testimonials */}
-      <section className="py-24" style={{ backgroundColor: "#0a0a0a" }}>
+      <section className="py-16 md:py-24 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <span className="inline-block text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-4" style={{ color: "#EF4444", background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}>
-              Social Proof
-            </span>
-            <h2 className="text-4xl lg:text-5xl font-extrabold text-white mb-4">
+          <div className="text-center mb-12">
+            <span className="text-red-500 font-medium text-xs uppercase tracking-widest">Social Proof</span>
+            <h2 className="text-2xl md:text-4xl font-bold text-slate-900 mt-3 font-['Outfit']">
               Hear From Our Customers
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-6">
             {testimonials.map((t, i) => (
               <div
                 key={i}
-                className="flex flex-col p-8 rounded-2xl transition-all duration-300 hover:-translate-y-1"
-                style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}
+                className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-slate-100 hover:shadow-lg transition-shadow flex flex-col"
               >
                 {/* Stars */}
-                <div className="flex gap-1 mb-5">
+                <div className="flex items-center gap-1 mb-4">
                   {[...Array(5)].map((_, si) => (
-                    <Star key={si} className="w-4 h-4 fill-current" style={{ color: "#F59E0B" }} />
+                    <Star key={si} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                   ))}
                 </div>
 
-                {/* Quote icon */}
-                <Quote className="w-8 h-8 mb-4 flex-shrink-0" style={{ color: "rgba(239,68,68,0.4)" }} />
+                <Quote className="w-8 h-8 text-red-100 mb-3" />
 
-                {/* Quote text */}
-                <p className="text-sm leading-relaxed flex-1 mb-8" style={{ color: "#D1D5DB" }}>
-                  "{t.quote}"
+                <p className="text-slate-600 text-sm leading-relaxed mb-6 italic flex-1">
+                  &ldquo;{t.quote}&rdquo;
                 </p>
 
-                {/* Author */}
-                <div className="flex items-center gap-3 pt-6" style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}>
-                  <div
-                    className="w-11 h-11 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0"
-                    style={{ backgroundColor: "#EF4444" }}
-                  >
+                <div className="flex items-center gap-3 pt-4 border-t border-slate-100">
+                  <div className="w-10 h-10 bg-slate-900 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
                     {t.initials}
                   </div>
                   <div>
-                    <div className="text-white font-semibold text-sm">{t.name}</div>
-                    <div className="text-xs" style={{ color: "#9CA3AF" }}>
-                      {t.role} &middot; {t.company}
-                    </div>
+                    <p className="font-semibold text-slate-900 text-sm">{t.name}</p>
+                    <p className="text-slate-500 text-xs">{t.role} &middot; {t.company}</p>
                   </div>
                 </div>
               </div>
@@ -61,17 +50,16 @@ const Testimonials = () => {
       </section>
 
       {/* Customer logos */}
-      <section className="py-14" style={{ backgroundColor: "#0d0d0d", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
+      <section className="py-10 bg-white border-y border-slate-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-xs font-bold uppercase tracking-widest mb-10" style={{ color: "#6B7280" }}>
+          <p className="text-center text-slate-400 text-xs uppercase tracking-widest mb-6">
             Some of Our Customers
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-8 lg:gap-14">
+          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16">
             {customers.map((customer) => (
               <div
                 key={customer}
-                className="text-xl font-bold tracking-tight opacity-40 hover:opacity-70 transition-opacity duration-300"
-                style={{ color: "#9CA3AF" }}
+                className="text-slate-300 font-bold text-lg md:text-xl font-['Outfit'] hover:text-slate-500 transition-colors cursor-default"
               >
                 {customer}
               </div>

@@ -1,56 +1,60 @@
 import React from "react";
-import { stats, trustPartners } from "../mock";
+import { Target, TrendingUp, Store, House } from "lucide-react";
+import { trustPartners } from "../mock";
+
+const statsData = [
+  { value: "400K+", label: "Thefts Caught Yearly", icon: Target, iconColor: "text-red-500" },
+  { value: "30%", label: "Average Shrink Reduction", icon: TrendingUp, iconColor: "text-green-500" },
+  { value: "20K+", label: "Stores Protected", icon: Store, iconColor: "text-blue-500" },
+  { value: "100%", label: "Remote Workforce", icon: House, iconColor: "text-purple-500" },
+];
 
 const StatsAndTrust = () => {
   return (
     <>
       {/* Stats Section */}
-      <section className="py-20" style={{ backgroundColor: "#0a0a0a" }}>
+      <section className="py-12 md:py-16 bg-white border-b border-slate-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
-            <span className="inline-block text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-4" style={{ color: "#EF4444", background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}>
-              Our Impact in Numbers
-            </span>
-          </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-            {stats.map((stat, i) => (
-              <div
-                key={i}
-                className="text-center py-8 px-6 rounded-2xl transition-all duration-300 hover:-translate-y-1"
-                style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}
-              >
+          <p className="text-center text-slate-500 text-xs uppercase tracking-widest mb-8 font-medium">
+            Our Impact in Numbers
+          </p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
+            {statsData.map((stat, i) => {
+              const Icon = stat.icon;
+              return (
                 <div
-                  className="text-5xl lg:text-6xl font-extrabold mb-3 leading-none"
-                  style={{ color: "#EF4444" }}
+                  key={i}
+                  className="text-center p-4 md:p-6 rounded-xl bg-slate-50 border border-slate-100 hover:shadow-md transition-shadow"
                 >
-                  {stat.value}
+                  <Icon className={`w-6 h-6 ${stat.iconColor} mx-auto mb-2`} />
+                  <div className="text-2xl md:text-4xl font-bold text-slate-900 font-['Outfit']">
+                    {stat.value}
+                  </div>
+                  <div className="text-slate-500 text-xs md:text-sm mt-1">{stat.label}</div>
                 </div>
-                <div className="text-sm font-medium" style={{ color: "#9CA3AF" }}>
-                  {stat.label}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
 
       {/* Trust Badges Section */}
-      <section className="py-16" style={{ backgroundColor: "#0d0d0d", borderTop: "1px solid rgba(255,255,255,0.05)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+      <section className="py-8 md:py-10 bg-slate-50 border-b border-slate-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-sm font-semibold uppercase tracking-widest mb-10" style={{ color: "#6B7280" }}>
+          <p className="text-center text-slate-400 text-xs uppercase tracking-widest mb-6">
             Trusted By Industry Leaders
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-12 lg:gap-16">
+          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16">
             {trustPartners.map((partner) => (
-              <div key={partner.name} className="flex items-center justify-center opacity-60 hover:opacity-100 transition-opacity duration-300" style={{ height: "48px" }}>
+              <div
+                key={partner.name}
+                className="grayscale hover:grayscale-0 opacity-50 hover:opacity-100 transition-all duration-300"
+              >
                 <img
                   src={partner.logo}
                   alt={partner.name}
-                  className="max-h-full max-w-[160px] object-contain"
-                  style={{ filter: "grayscale(100%) brightness(2)" }}
-                  onError={(e) => {
-                    e.target.style.display = "none";
-                  }}
+                  className="h-8 md:h-12 w-auto object-contain"
+                  onError={(e) => { e.target.style.display = "none"; }}
                 />
               </div>
             ))}

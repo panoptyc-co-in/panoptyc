@@ -1,65 +1,40 @@
 import React from "react";
-import { steps } from "../mock";
-import { Navigation2 } from "lucide-react";
+import { Send, User, FileText, Rocket, Navigation2 } from "lucide-react";
+
+const steps = [
+  { number: "01", title: "Apply Online", description: "Fill the application form with your basic details. It only takes 2 minutes.", icon: Send },
+  { number: "02", title: "Complete Profile", description: "Set up your profile with personal details, education info, and passport photo.", icon: User },
+  { number: "03", title: "Sign Agreement", description: "Review and sign the employment agreement digitally on our platform.", icon: FileText },
+  { number: "04", title: "Start Working", description: "Receive your employee code and begin your paid training immediately.", icon: Rocket },
+];
 
 const HowToJoin = ({ onApply }) => {
   return (
-    <section className="py-24" style={{ backgroundColor: "#0d0d0d" }}>
+    <section className="py-16 md:py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <span className="inline-block text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-4" style={{ color: "#EF4444", background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}>
-            Getting Started
-          </span>
-          <h2 className="text-4xl lg:text-5xl font-extrabold text-white mb-4">
-            How to Join Panoptyc
-          </h2>
-          <p className="text-lg max-w-xl mx-auto" style={{ color: "#9CA3AF" }}>
-            A simple 4-step process to start your career
-          </p>
+        <div className="text-center mb-12">
+          <span className="text-red-500 font-medium text-xs uppercase tracking-widest">Getting Started</span>
+          <h2 className="text-2xl md:text-4xl font-bold text-slate-900 mt-3 font-['Outfit']">How to Join Panoptyc</h2>
+          <p className="text-slate-500 text-sm md:text-base mt-2">A simple 4-step process to start your career</p>
         </div>
 
-        {/* Steps */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          {steps.map((step, i) => (
-            <div key={i} className="relative">
-              {/* Connector line */}
-              {i < steps.length - 1 && (
-                <div
-                  className="hidden lg:block absolute top-10 left-[calc(50%+3rem)] right-0 h-px"
-                  style={{ background: "rgba(239,68,68,0.25)", zIndex: 0 }}
-                />
-              )}
-              <div
-                className="relative z-10 p-7 rounded-2xl text-center h-full transition-all duration-300 hover:-translate-y-1"
-                style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}
-              >
-                <div
-                  className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5"
-                  style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.25)" }}
-                >
-                  <span className="text-xl font-extrabold" style={{ color: "#EF4444" }}>STEP {step.number}</span>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 relative">
+          {/* Connector line */}
+          <div className="hidden md:block absolute top-16 left-[15%] right-[15%] h-0.5 bg-gradient-to-r from-red-200 via-red-400 to-red-200" />
+
+          {steps.map((step, i) => {
+            const Icon = step.icon;
+            return (
+              <div key={i} className="relative text-center">
+                <div className="w-14 h-14 md:w-16 md:h-16 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-4 border-2 border-red-100 relative z-10 bg-white">
+                  <Icon className="w-6 h-6 md:w-7 md:h-7 text-red-500" />
                 </div>
-                <h3 className="text-white font-bold text-lg mb-3">{step.title}</h3>
-                <p className="text-sm leading-relaxed" style={{ color: "#9CA3AF" }}>
-                  {step.description}
-                </p>
+                <div className="text-red-500 text-xs font-bold mb-1">STEP {step.number}</div>
+                <h3 className="text-sm md:text-base font-bold text-slate-900 font-['Outfit'] mb-1">{step.title}</h3>
+                <p className="text-slate-500 text-xs md:text-sm">{step.description}</p>
               </div>
-            </div>
-          ))}
-        </div>
-
-        {/* CTA */}
-        <div className="text-center">
-          <button
-            onClick={onApply}
-            className="inline-flex items-center gap-2.5 px-10 py-4 rounded-xl font-semibold text-white text-lg transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg"
-            style={{ backgroundColor: "#EF4444" }}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#DC2626")}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#EF4444")}
-          >
-            <Navigation2 className="w-5 h-5" />
-            Apply Now — It Only Takes 2 Minutes
-          </button>
+            );
+          })}
         </div>
       </div>
     </section>
