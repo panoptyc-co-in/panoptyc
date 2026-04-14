@@ -9,37 +9,31 @@ import { faqItems } from "../mock";
 
 const FAQ = () => {
   return (
-    <section id="faq" className="py-24" style={{ backgroundColor: "#0f1419" }}>
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="faq" className="py-24 bg-[#F8FAFC]">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <span className="inline-block text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-4" style={{ color: "#EF4444", background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}>
-            Questions?
+          <span className="inline-block text-[11px] font-bold uppercase tracking-[0.15em] mb-4 text-[#ef4444]">
+            QUESTIONS?
           </span>
-          <h2 className="text-4xl lg:text-5xl font-extrabold text-white mb-4">
+          <h2 className="text-[36px] md:text-[42px] font-extrabold text-[#0F172A] tracking-tight">
             Frequently Asked Questions
           </h2>
-          <p className="text-lg" style={{ color: "#9CA3AF" }}>
-            Everything you need to know about working with Panoptyc
-          </p>
         </div>
 
-        <Accordion type="single" collapsible className="space-y-3">
+        <Accordion type="single" collapsible className="space-y-4">
           {faqItems.map((item, i) => (
             <AccordionItem
               key={i}
               value={`item-${i}`}
-              className="rounded-2xl overflow-hidden"
-              style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}
+              className="bg-white rounded-[12px] shadow-[0_2px_12px_rgb(0,0,0,0.02)] border border-gray-100 overflow-hidden"
             >
               <AccordionTrigger
-                className="px-6 py-5 text-left font-semibold text-white hover:no-underline"
-                style={{ fontSize: "1rem" }}
+                className="px-6 py-[20px] text-left font-bold text-[#0F172A] text-[14px] hover:no-underline [&>svg]:text-[#9CA3AF] [&>svg]:w-[18px] [&>svg]:h-[18px]"
               >
                 {item.question}
               </AccordionTrigger>
               <AccordionContent
-                className="px-6 pb-5 text-sm leading-relaxed"
-                style={{ color: "#9CA3AF" }}
+                className="px-6 pb-[20px] pt-0 text-[14px] leading-[1.6] text-[#64748B]"
               >
                 {item.answer}
               </AccordionContent>

@@ -8,6 +8,7 @@ import WhyPanoptyc from "./components/WhyPanoptyc";
 import Industries from "./components/Industries";
 import RoleSection from "./components/RoleSection";
 import Benefits from "./components/Benefits";
+import Requirements from "./components/Requirements";
 import HowToJoin from "./components/HowToJoin";
 import Testimonials from "./components/Testimonials";
 import FAQ from "./components/FAQ";
@@ -17,6 +18,8 @@ import ApplyModal from "./components/ApplyModal";
 import ProfileSetupModal from "./components/ProfileSetupPage";
 import PasskeyOrderPage from "./components/PasskeyOrderPage";
 import EmployeeLoginPage from "./components/EmployeeLoginPage";
+import AdminLoginPage from "./components/AdminLoginPage";
+import AdminDashboard from "./components/AdminDashboard";
 
 const HomePage = ({ onApply, onProfileSetup }) => (
   <>
@@ -27,6 +30,7 @@ const HomePage = ({ onApply, onProfileSetup }) => (
       <WhyPanoptyc />
       <Industries />
       <RoleSection onApply={onApply} />
+      <Requirements />
       <Benefits />
       <HowToJoin onApply={onApply} />
       <Testimonials />
@@ -45,17 +49,21 @@ function App() {
     <div style={{ minHeight: "100vh", backgroundColor: "#0f172a", fontFamily: "'Inter', sans-serif" }}>
       <BrowserRouter>
         <Routes>
-          <Route 
-            path="/" 
+          <Route
+            path="/"
             element={
-              <HomePage 
-                onApply={() => setApplyOpen(true)} 
+              <HomePage
+                onApply={() => setApplyOpen(true)}
                 onProfileSetup={() => setProfileSetupOpen(true)}
               />
-            } 
+            }
           />
           <Route path="/passkey-order" element={<PasskeyOrderPage />} />
           <Route path="/employee-login" element={<EmployeeLoginPage />} />
+
+          {/* ── Admin Routes ── */}
+          <Route path="/admin" element={<AdminLoginPage />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
         </Routes>
         <ApplyModal open={applyOpen} onClose={() => setApplyOpen(false)} />
         <ProfileSetupModal open={profileSetupOpen} onClose={() => setProfileSetupOpen(false)} />

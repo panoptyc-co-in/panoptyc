@@ -1,19 +1,21 @@
 import React from "react";
-import { ShoppingCart, AlertTriangle, Eye } from "lucide-react";
+import { ShoppingCart, AlertTriangle, Eye, TrendingUp } from "lucide-react";
 import { whyPanoptyc } from "../mock";
 
 const iconMap = { ShoppingCart, AlertTriangle, Eye };
 
 const WhyPanoptyc = () => {
   return (
-    <section className="py-24 !bg-[#FFFFFF]" style={{ backgroundColor: "#0f1419" }}>
+    <section className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <span className="inline-block uppercase text-xs font-bold tracking-widest !mb-[0px] !pt-[4px] !pb-[4px] !pl-[12px] !pr-[12px] !rounded-none !text-[#EF4444] !bg-[rgba(239,68,68,0)]" style={{ color: "#EF4444", background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}>
-            What We Do
+          <span className="inline-block text-[11px] font-bold uppercase tracking-[0.15em] mb-4 text-[#ef4444]">
+            WHAT WE DO
           </span>
-          <h2 className="text-4xl lg:text-5xl font-extrabold mb-4 !text-[#0E1628]">Why Panoptyc?</h2>
-          <p className="text-lg max-w-2xl mx-auto" style={{ color: "#9CA3AF" }}>
+          <h2 className="text-[36px] md:text-[42px] font-extrabold text-[#0F172A] tracking-tight mb-4">
+            Why Panoptyc?
+          </h2>
+          <p className="text-[15px] max-w-2xl mx-auto text-[#64748B] leading-relaxed">
             Grocers and retail operators turn to Panoptyc to solve their biggest loss prevention challenges
           </p>
         </div>
@@ -24,41 +26,33 @@ const WhyPanoptyc = () => {
             return (
               <div
                 key={i}
-                className="group transition-all duration-300 hover:-translate-y-1 p-8 rounded-2xl !bg-[#FBFCFD]"
-                style={{
-                  background: "rgba(255,255,255,0.03)",
-                  border: "1px solid rgba(255,255,255,0.08)"
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "rgba(239,68,68,0.05)";
-                  e.currentTarget.style.borderColor = "rgba(239,68,68,0.25)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "rgba(255,255,255,0.03)";
-                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)";
-                }}>
-
-                <div
-                  className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5"
-                  style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}>
-
-                  <Icon className="w-7 h-7" style={{ color: "#EF4444" }} />
+                className="p-8 md:p-10 rounded-[24px] bg-[#F8FAFC] flex flex-col h-full transition-all duration-300 hover:shadow-sm border border-transparent hover:border-gray-100"
+              >
+                <div className="w-[48px] h-[48px] rounded-[14px] bg-[#FEF2F2] flex items-center justify-center mb-6">
+                  <Icon className="w-[22px] h-[22px] text-[#ef4444]" strokeWidth={1.5} />
                 </div>
-                <h3 className="text-xl font-bold mb-3 !text-[#0E1628]">{item.title}</h3>
-                <p className="text-sm leading-relaxed mb-4" style={{ color: "#9CA3AF" }}>
+                
+                <h3 className="text-[18px] md:text-[20px] font-bold mb-3 text-[#0F172A] leading-snug">
+                  {item.title}
+                </h3>
+                
+                <p className="text-[14px] leading-[1.65] text-[#64748B] mb-8">
                   {item.description}
                 </p>
-                <div className="inline-flex items-center gap-1.5 text-xs font-semibold" style={{ color: "#4ADE80" }}>
-                  <span>→</span>
-                  <span>{item.stat}</span>
+                
+                <div className="mt-auto">
+                  <div className="inline-flex items-center text-[11px] font-bold text-[#15803D] bg-[#F0FDF4] px-2.5 py-1.5 rounded-[6px]">
+                    <TrendingUp className="w-[12px] h-[12px] mr-1.5 opacity-80" strokeWidth={2.5} />
+                    <span>{item.stat}</span>
+                  </div>
                 </div>
-              </div>);
-
+              </div>
+            );
           })}
         </div>
       </div>
-    </section>);
-
+    </section>
+  );
 };
 
 export default WhyPanoptyc;

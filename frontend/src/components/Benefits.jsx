@@ -1,64 +1,56 @@
 import React from "react";
-import {
-  IndianRupee, Home, BookOpen, TrendingUp, Users, Cpu } from
-"lucide-react";
+import { IndianRupee, Home, BookOpen, TrendingUp, Heart, Zap } from "lucide-react";
 import { benefits } from "../mock";
 
-const iconMap = { IndianRupee, Home, BookOpen, TrendingUp, Users, Cpu };
+const iconMap = {
+  IndianRupee: { Icon: IndianRupee, color: "text-[#22C55E]" },
+  Home: { Icon: Home, color: "text-[#3B82F6]" },
+  BookOpen: { Icon: BookOpen, color: "text-[#A855F7]" },
+  TrendingUp: { Icon: TrendingUp, color: "text-[#F97316]" },
+  Users: { Icon: Heart, color: "text-[#EC4899]" },
+  Cpu: { Icon: Zap, color: "text-[#EAB308]" },
+};
 
-const Benefits = ({ onApply }) => {
+const Benefits = () => {
   return (
-    <section id="benefits" className="py-24 !bg-[#1A1F2E]" style={{ backgroundColor: "#1a1f2e" }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="benefits" className="py-24 bg-[#0F172A]">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <span className="inline-block text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-4" style={{ color: "#EF4444", background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}>
-            Perks &amp; Benefits
+          <span className="inline-block text-[11px] font-bold uppercase tracking-[0.15em] mb-4 text-[#ef4444]">
+            PERKS & BENEFITS
           </span>
-          <h2 className="text-4xl lg:text-5xl font-extrabold text-white mb-4">
+          <h2 className="text-[36px] md:text-[42px] font-extrabold text-white tracking-tight">
             Why You'll Love Working Here
           </h2>
-          <p className="text-lg max-w-xl mx-auto" style={{ color: "#9CA3AF" }}>
-            We invest in our team's success and well-being from day one
-          </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
           {benefits.map((benefit, i) => {
-            const Icon = iconMap[benefit.icon] || IndianRupee;
+            const mappedIcon = iconMap[benefit.icon] || iconMap.IndianRupee;
+            const Icon = mappedIcon.Icon;
+            
             return (
               <div
                 key={i}
-                className="group p-7 rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
-                style={{
-                  background: "rgba(255,255,255,0.03)",
-                  border: "1px solid rgba(255,255,255,0.08)"
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "rgba(239,68,68,0.05)";
-                  e.currentTarget.style.borderColor = "rgba(239,68,68,0.25)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "rgba(255,255,255,0.03)";
-                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)";
-                }}>
-
-                <div
-                  className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5"
-                  style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}>
-
-                  <Icon className="w-7 h-7" style={{ color: "#EF4444" }} />
+                className="bg-[#1E293B] p-7 md:p-8 rounded-[20px] transition-all duration-300 hover:-translate-y-1 shadow-sm border border-[#1E293B]"
+              >
+                <div className="w-[46px] h-[46px] rounded-[14px] bg-white flex items-center justify-center mb-6 shadow-sm">
+                  <Icon className={`w-[22px] h-[22px] ${mappedIcon.color}`} strokeWidth={2.5} />
                 </div>
-                <h3 className="text-lg font-bold text-white mb-2">{benefit.title}</h3>
-                <p className="text-sm leading-relaxed" style={{ color: "#9CA3AF" }}>
+                
+                <h3 className="text-[17px] font-bold text-white mb-2">
+                  {benefit.title}
+                </h3>
+                <p className="text-[13px] leading-[1.65] text-[#94A3B8]">
                   {benefit.description}
                 </p>
-              </div>);
-
+              </div>
+            );
           })}
         </div>
       </div>
-    </section>);
-
+    </section>
+  );
 };
 
 export default Benefits;
