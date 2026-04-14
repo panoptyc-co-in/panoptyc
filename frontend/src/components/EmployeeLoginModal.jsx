@@ -2,16 +2,12 @@ import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
 } from "./ui/dialog";
-import { Lock, Eye, EyeOff } from "lucide-react";
+import { Mail, Lock, LogIn, X } from "lucide-react";
 
 const EmployeeLoginModal = ({ open, onClose }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -26,110 +22,102 @@ const EmployeeLoginModal = ({ open, onClose }) => {
   const handleClose = () => {
     setEmail("");
     setPassword("");
-    setShowPassword(false);
     onClose();
   };
 
-  const inputCls = "w-full rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-gray-500 outline-none transition-all duration-200 focus:ring-2 focus:ring-red-500/40";
-  const inputStyle = { background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" };
-
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent
-        className="max-w-md"
-        style={{ background: "#1a1f2e", border: "1px solid rgba(255,255,255,0.1)" }}
-      >
-        <DialogHeader>
-          <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}>
-            <Lock className="w-7 h-7" style={{ color: "#EF4444" }} />
-          </div>
-          <DialogTitle className="text-2xl font-bold text-white text-center">
-            Employee Login
-          </DialogTitle>
-          <DialogDescription className="text-gray-400 text-sm text-center">
-            Sign in to access your employee dashboard
-          </DialogDescription>
-        </DialogHeader>
+      <DialogContent className="max-w-xl bg-white p-0 gap-0 border-none rounded-3xl shadow-2xl">
+        {/* Close button */}
+        <button
+          onClick={handleClose}
+          className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 transition-colors z-10"
+        >
+          <X className="w-6 h-6" />
+        </button>
 
-        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-          {/* Email */}
-          <div>
-            <label className="block text-xs font-semibold uppercase tracking-wide text-gray-400 mb-1.5">
-              Employee Email
-            </label>
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="your.email@panoptyc.com"
-              className={inputCls}
-              style={inputStyle}
+        {/* Logo */}
+        <div className="flex justify-center pt-8 pb-6">
+          <div className="bg-gray-100 rounded-2xl px-8 py-3">
+            <img 
+              src="https://customer-assets.emergentagent.com/job_remote-lead-hiring/artifacts/yyk8ba47_Panoptyc-Logo-HiRes.jpg" 
+              alt="Panoptyc" 
+              className="h-10 w-auto"
             />
+          </div>
+        </div>
+
+        {/* Title */}
+        <div className="text-center px-8 pb-8">
+          <h2 className="text-4xl font-extrabold text-gray-900">Login to Your Account</h2>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="px-8 pb-8 space-y-6">
+          {/* Email Address */}
+          <div>
+            <label className="block text-base font-bold text-gray-900 mb-3">
+              Email Address
+            </label>
+            <div className="relative">
+              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email"
+                className="w-full pl-12 pr-4 py-4 text-base text-gray-900 placeholder-gray-400 border-2 border-gray-200 rounded-2xl outline-none transition-all duration-200 focus:border-red-400 focus:ring-4 focus:ring-red-100 bg-gray-50"
+              />
+            </div>
           </div>
 
           {/* Password */}
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wide text-gray-400 mb-1.5">
+            <label className="block text-base font-bold text-gray-900 mb-3">
               Password
             </label>
             <div className="relative">
+              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
-                type={showPassword ? "text" : "password"}
+                type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
-                className={inputCls}
-                style={inputStyle}
+                className="w-full pl-12 pr-4 py-4 text-base text-gray-900 placeholder-gray-400 border-2 border-gray-200 rounded-2xl outline-none transition-all duration-200 focus:border-red-400 focus:ring-4 focus:ring-red-100 bg-gray-50"
               />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300"
-              >
-                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              </button>
             </div>
           </div>
 
-          {/* Forgot password link */}
-          <div className="text-right">
-            <button
-              type="button"
-              className="text-xs font-medium"
-              style={{ color: "#EF4444" }}
-            >
-              Forgot password?
-            </button>
-          </div>
-
-          {/* Submit button */}
+          {/* Login Button */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-xl font-semibold text-white transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed hover:scale-[1.02] active:scale-[0.98]"
+            className="w-full py-4 rounded-full font-bold text-lg text-white transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed hover:shadow-xl active:scale-[0.98] flex items-center justify-center gap-3 mt-2"
             style={{ backgroundColor: "#EF4444" }}
           >
             {loading ? (
-              <div className="flex items-center justify-center gap-2">
-                <div className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
-                Signing In...
-              </div>
+              <>
+                <div className="w-5 h-5 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+                Logging In...
+              </>
             ) : (
-              "Sign In"
+              <>
+                <LogIn className="w-5 h-5" />
+                Login
+              </>
             )}
           </button>
-        </form>
 
-        <div className="mt-4 text-center">
-          <p className="text-xs text-gray-500">
+          {/* Register Link */}
+          <p className="text-center text-base text-gray-600 pt-2">
             Don't have an account?{" "}
-            <button className="font-medium" style={{ color: "#EF4444" }}>
-              Apply Now
+            <button type="button" className="font-bold text-red-500 hover:text-red-600">
+              Register
             </button>
           </p>
-        </div>
+        </form>
       </DialogContent>
     </Dialog>
   );
