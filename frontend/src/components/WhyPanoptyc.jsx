@@ -6,7 +6,7 @@ const iconMap = { ShoppingCart, AlertTriangle, Eye };
 
 const WhyPanoptyc = () => {
   return (
-    <section className="py-24 !bg-[#F3F4F4]" style={{ backgroundColor: "#0f1419" }}>
+    <section className="py-24 !bg-[#FFFFFF]" style={{ backgroundColor: "#0f1419" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <span className="inline-block text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-4" style={{ color: "#EF4444", background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}>
