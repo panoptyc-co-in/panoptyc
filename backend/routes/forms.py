@@ -63,25 +63,98 @@ class AdminLoginForm(BaseModel):
     password: str
 
 
-def _load_json_list(file_path: str):
+BASE_DATA_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "data"))
+TMP_DATA_DIR = "/tmp/panoptyc-data"
+
+
+def _storage_name(file_name_or_path: str) -> str:
+    return os.path.basename(file_name_or_path)
+
+
+def _storage_read_paths(file_name_or_path: str):
+    name = _storage_name(file_name_or_path)
+    return [
+        os.path.join(TMP_DATA_DIR, name),
+        os.path.join(BASE_DATA_DIR, name),
+    ]
+
+
+def _storage_write_path(file_name_or_path: str) -> str:
+    name = _storage_name(file_name_or_path)
+    primary = os.path.join(BASE_DATA_DIR, name)
+
+    try:
+        os.makedirs(BASE_DATA_DIR, exist_ok=True)
+        if os.access(BASE_DATA_DIR, os.W_OK):
+            return primary
+    except Exception:
+        pass
+
+    os.makedirs(TMP_DATA_DIR, exist_ok=True)
+    return os.path.join(TMP_DATA_DIR, name)
+
+
+def _load_json_list(file_name_or_path: str):
     import json
 
-    if not os.path.exists(file_path):
-        return []
+    for path in _storage_read_paths(file_name_or_path):
+        if not os.path.exists(path):
+            continue
+        with open(path, "r") as f:
+            try:
+                data = json.load(f)
+                if isinstance(data, list):
+                    return data
+            except Exception:
+                continue
+    return []
 
-    with open(file_path, "r") as f:
-        try:
-            data = json.load(f)
-            return data if isinstance(data, list) else []
-        except Exception:
-            return []
 
-
-def _save_json_list(file_path: str, rows):
+def _load_json_dict(file_name_or_path: str, default=None):
     import json
 
-    with open(file_path, "w") as f:
-        json.dump(rows, f, indent=4)
+    if default is None:
+        default = {}
+
+    for path in _storage_read_paths(file_name_or_path):
+        if not os.path.exists(path):
+            continue
+        with open(path, "r") as f:
+            try:
+                data = json.load(f)
+                if isinstance(data, dict):
+                    return data
+            except Exception:
+                continue
+    return default
+
+
+def _save_json_list(file_name_or_path: str, rows):
+    import json
+
+    path = _storage_write_path(file_name_or_path)
+    try:
+        with open(path, "w") as f:
+            json.dump(rows, f, indent=4)
+    except OSError:
+        fallback = os.path.join(TMP_DATA_DIR, _storage_name(file_name_or_path))
+        os.makedirs(TMP_DATA_DIR, exist_ok=True)
+        with open(fallback, "w") as f:
+            json.dump(rows, f, indent=4)
+
+
+def _save_json_dict(file_name_or_path: str, payload):
+    import json
+
+    path = _storage_write_path(file_name_or_path)
+    try:
+        with open(path, "w") as f:
+            json.dump(payload, f, indent=4)
+    except OSError:
+        fallback = os.path.join(TMP_DATA_DIR, _storage_name(file_name_or_path))
+        os.makedirs(TMP_DATA_DIR, exist_ok=True)
+        with open(fallback, "w") as f:
+            json.dump(payload, f, indent=4)
 
 
 # ---------- Submit Application ----------
@@ -90,8 +163,6 @@ def _save_json_list(file_path: str, rows):
 async def submit_application(form: ApplicationForm):
     """Save application form data to Supabase"""
     try:
-        import json
-
         data = {
             "full_name": form.fullName,
             "phone": form.phone,
@@ -129,14 +200,7 @@ async def submit_application(form: ApplicationForm):
             if row.get("created_at"):
                 created_at = row.get("created_at")
 
-        apps_path = os.path.join(os.path.dirname(__file__), "..", "data", "applications.json")
-        apps = []
-        if os.path.exists(apps_path):
-            with open(apps_path, "r") as f:
-                try:
-                    apps = json.load(f)
-                except Exception:
-                    apps = []
+        apps = _load_json_list("applications.json")
 
         entry = {
             "id": app_id,
@@ -153,8 +217,7 @@ async def submit_application(form: ApplicationForm):
         else:
             apps.append(entry)
 
-        with open(apps_path, "w") as f:
-            json.dump(apps, f, indent=4)
+        _save_json_list("applications.json", apps)
 
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         return {
@@ -186,27 +249,11 @@ async def admin_login(form: AdminLoginForm):
 async def get_applications():
     """Return applications merged with locally stored email data."""
     try:
-        import json
-
-        apps_path = os.path.join(os.path.dirname(__file__), "..", "data", "applications.json")
-        deleted_path = os.path.join(os.path.dirname(__file__), "..", "data", "deleted_records.json")
-
-        local_apps = []
-        if os.path.exists(apps_path):
-            with open(apps_path, "r") as f:
-                try:
-                    local_apps = json.load(f)
-                except Exception:
-                    local_apps = []
+        local_apps = _load_json_list("applications.json")
 
         deleted_ids = set()
-        if os.path.exists(deleted_path):
-            with open(deleted_path, "r") as f:
-                try:
-                    deleted_data = json.load(f)
-                    deleted_ids = set(str(item) for item in deleted_data.get("applications", []))
-                except Exception:
-                    deleted_ids = set()
+        deleted_data = _load_json_dict("deleted_records.json", {})
+        deleted_ids = set(str(item) for item in deleted_data.get("applications", []))
 
         local_by_id = {str(item.get("id")): item for item in local_apps if item.get("id")}
         merged = {}
@@ -250,8 +297,6 @@ async def get_applications():
 async def employee_login(form: ProfileSetupForm):
     """Login employee with email + password, return employee code if registered"""
     try:
-        import json
-
         # 1. Verify credentials from Supabase profile_setups table
         records = []
         if supabase is not None:
@@ -263,18 +308,11 @@ async def employee_login(form: ProfileSetupForm):
             raise HTTPException(status_code=401, detail="Invalid email or password.")
 
         # Check if email is disabled (deleted)
-        del_file = os.path.join(os.path.dirname(__file__), "..", "data", "deleted_records.json")
-        if os.path.exists(del_file):
-            try:
-                with open(del_file, "r") as f:
-                    del_data = json.load(f)
-                if form.email in del_data.get("profile_setups", []):
-                    raise HTTPException(status_code=401, detail="Account has been disabled or removed.")
-            except:
-                pass
+        del_data = _load_json_dict("deleted_records.json", {})
+        if form.email in del_data.get("profile_setups", []):
+            raise HTTPException(status_code=401, detail="Account has been disabled or removed.")
 
         # 2. Look up complete profile to get employeeCode
-        file_path = os.path.join(os.path.dirname(__file__), "..", "data", "complete_profiles.json")
         employee_code = None
         first_name = ""
         last_name = ""
@@ -282,21 +320,16 @@ async def employee_login(form: ProfileSetupForm):
         address = ""
         education = ""
         photo = ""
-        if os.path.exists(file_path):
-            with open(file_path, "r") as f:
-                try:
-                    profiles = json.load(f)
-                except json.JSONDecodeError:
-                    profiles = []
-            emp = next((p for p in profiles if p.get("email") == form.email), None)
-            if emp:
-                employee_code = emp.get("employeeCode", "")
-                first_name = emp.get("firstName", "")
-                last_name = emp.get("lastName", "")
-                mobile = emp.get("mobile", "")
-                address = emp.get("address", "")
-                education = emp.get("education", "")
-                photo = emp.get("photo", "")
+        profiles = _load_json_list("complete_profiles.json")
+        emp = next((p for p in profiles if p.get("email") == form.email), None)
+        if emp:
+            employee_code = emp.get("employeeCode", "")
+            first_name = emp.get("firstName", "")
+            last_name = emp.get("lastName", "")
+            mobile = emp.get("mobile", "")
+            address = emp.get("address", "")
+            education = emp.get("education", "")
+            photo = emp.get("photo", "")
 
         return {
             "success": True,
@@ -345,22 +378,13 @@ async def submit_profile_setup(form: ProfileSetupForm):
 async def submit_complete_profile(form: CompleteProfileForm):
     """Save complete profile form data to local JSON"""
     try:
-        import json
-        file_path = os.path.join(os.path.dirname(__file__), "..", "data", "complete_profiles.json")
-        data_list = []
-        if os.path.exists(file_path):
-            with open(file_path, "r") as f:
-                try:
-                    data_list = json.load(f)
-                except json.JSONDecodeError:
-                    data_list = []
+        data_list = _load_json_list("complete_profiles.json")
                     
         new_entry = form.dict()
         new_entry["created_at"] = datetime.now().isoformat()
         data_list.append(new_entry)
         
-        with open(file_path, "w") as f:
-            json.dump(data_list, f, indent=4)
+        _save_json_list("complete_profiles.json", data_list)
             
         return {"success": True, "message": "Profile details saved successfully!", "employeeCode": form.employeeCode}
     except Exception as e:
@@ -370,15 +394,7 @@ async def submit_complete_profile(form: CompleteProfileForm):
 async def get_complete_profiles():
     """Get all complete profiles from JSON"""
     try:
-        import json
-        file_path = os.path.join(os.path.dirname(__file__), "..", "data", "complete_profiles.json")
-        if os.path.exists(file_path):
-            with open(file_path, "r") as f:
-                try:
-                    return json.load(f)
-                except json.JSONDecodeError:
-                    return []
-        return []
+        return _load_json_list("complete_profiles.json")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -394,19 +410,11 @@ class DeleteRecordForm(BaseModel):
 @router.api_route("/api/delete-record", methods=["DELETE", "POST"])
 async def delete_record(req: DeleteRecordForm):
     try:
-        import json
         tab = (req.tab or "").strip()
         if tab not in ["applications", "passkey_orders", "complete_profiles"]:
             raise HTTPException(status_code=400, detail="Invalid tab for delete request")
 
-        file_path = os.path.join(os.path.dirname(__file__), "..", "data", "deleted_records.json")
-        deleted_data = {"applications": [], "passkey_orders": [], "profile_setups": []}
-        if os.path.exists(file_path):
-            try:
-                with open(file_path, "r") as f:
-                    deleted_data = json.load(f)
-            except:
-                pass
+        deleted_data = _load_json_dict("deleted_records.json", {"applications": [], "passkey_orders": [], "profile_setups": []})
 
         if tab in ["applications", "passkey_orders"]:
             if req.id is not None:
@@ -422,24 +430,12 @@ async def delete_record(req: DeleteRecordForm):
                     pass
 
                 if tab == "applications":
-                    apps_path = os.path.join(os.path.dirname(__file__), "..", "data", "applications.json")
-                    if os.path.exists(apps_path):
-                        with open(apps_path, "r") as f:
-                            try:
-                                apps = json.load(f)
-                            except Exception:
-                                apps = []
-                        apps = [item for item in apps if str(item.get("id")) != record_id]
-                        with open(apps_path, "w") as f:
-                            json.dump(apps, f, indent=4)
+                    apps = _load_json_list("applications.json")
+                    apps = [item for item in apps if str(item.get("id")) != record_id]
+                    _save_json_list("applications.json", apps)
         elif tab == "complete_profiles":
-            cp_path = os.path.join(os.path.dirname(__file__), "..", "data", "complete_profiles.json")
-            if os.path.exists(cp_path):
-                with open(cp_path, "r") as f:
-                    try:
-                        data_list = json.load(f)
-                    except json.JSONDecodeError:
-                        data_list = []
+            data_list = _load_json_list("complete_profiles.json")
+            if data_list:
                 
                 target_email = req.email
                 if not target_email:
@@ -461,26 +457,16 @@ async def delete_record(req: DeleteRecordForm):
                 elif target_email:
                     data_list = [d for d in data_list if d.get("email") != target_email]
 
-                with open(cp_path, "w") as f:
-                    json.dump(data_list, f, indent=4)
+                _save_json_list("complete_profiles.json", data_list)
 
-        with open(file_path, "w") as f:
-            json.dump(deleted_data, f, indent=4)
+        _save_json_dict("deleted_records.json", deleted_data)
         return {"success": True, "message": "Record deleted"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to delete record: {str(e)}")
 
 @router.get("/api/deleted-records")
 async def get_deleted_records():
-    import json
-    file_path = os.path.join(os.path.dirname(__file__), "..", "data", "deleted_records.json")
-    if os.path.exists(file_path):
-        try:
-            with open(file_path, "r") as f:
-                return json.load(f)
-        except:
-            return {}
-    return {}
+    return _load_json_dict("deleted_records.json", {})
 
 
 # ---------- Employee Login by Code ----------
@@ -489,15 +475,7 @@ async def get_deleted_records():
 async def employee_login_by_code(form: EmployeeLoginCodeForm):
     """Validate employee login using their unique employee code"""
     try:
-        import json
-        file_path = os.path.join(os.path.dirname(__file__), "..", "data", "complete_profiles.json")
-        data_list = []
-        if os.path.exists(file_path):
-            with open(file_path, "r") as f:
-                try:
-                    data_list = json.load(f)
-                except json.JSONDecodeError:
-                    data_list = []
+        data_list = _load_json_list("complete_profiles.json")
 
         # Search for matching employee code
         employee = next((e for e in data_list if e.get("employeeCode") == form.employeeCode.strip().upper()), None)
