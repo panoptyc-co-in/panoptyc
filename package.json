@@ -1,8 +1,21 @@
+
 {
-  "devDependencies": {
-    "eslint": "^8.57.0"
+  "name": "panoptyc",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
+    "react": "^18",
+    "react-dom": "^18",
     "date-fns": "^3.6.0"
+  },
+  "devDependencies": {
+    "vite": "^5",
+    "@vitejs/plugin-react": "^4",
+    "eslint": "^8.57.0"
   }
 }
