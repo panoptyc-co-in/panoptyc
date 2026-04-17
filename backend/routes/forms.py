@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from typing import Any
+from typing import Any, Optional
 from datetime import datetime
 import os
 import uuid
@@ -11,8 +11,13 @@ router = APIRouter()
 # Initialize Supabase client
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "")
+supabase: Optional[Client] = None
 
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+if SUPABASE_URL and SUPABASE_KEY:
+    try:
+        supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+    except Exception:
+        supabase = None
 
 
 # ---------- Pydantic Models ----------
@@ -58,6 +63,27 @@ class AdminLoginForm(BaseModel):
     password: str
 
 
+def _load_json_list(file_path: str):
+    import json
+
+    if not os.path.exists(file_path):
+        return []
+
+    with open(file_path, "r") as f:
+        try:
+            data = json.load(f)
+            return data if isinstance(data, list) else []
+        except Exception:
+            return []
+
+
+def _save_json_list(file_path: str, rows):
+    import json
+
+    with open(file_path, "w") as f:
+        json.dump(rows, f, indent=4)
+
+
 # ---------- Submit Application ----------
 
 @router.post("/api/submit-application")
@@ -74,20 +100,25 @@ async def submit_application(form: ApplicationForm):
         }
 
         result = None
-        try:
-            result = supabase.table("applications").insert(data).execute()
-        except Exception as err:
-            # Some deployed projects were created without applications.email column.
-            # Fallback keeps submissions working while we persist email locally for admin view.
-            message = str(err)
-            if "applications" in message and "email" in message and "column" in message:
-                result = supabase.table("applications").insert({
-                    "full_name": form.fullName,
-                    "phone": form.phone,
-                    "city": form.city,
-                }).execute()
-            else:
-                raise
+        if supabase is not None:
+            try:
+                result = supabase.table("applications").insert(data).execute()
+            except Exception as err:
+                # Some deployed projects were created without applications.email column.
+                # Fallback keeps submissions working while we persist email locally for admin view.
+                message = str(err)
+                if "applications" in message and "email" in message and "column" in message:
+                    try:
+                        result = supabase.table("applications").insert({
+                            "full_name": form.fullName,
+                            "phone": form.phone,
+                            "city": form.city,
+                        }).execute()
+                    except Exception:
+                        result = None
+                else:
+                    # Keep local backup working even when Supabase insert fails.
+                    result = None
 
         created_at = datetime.now().isoformat()
         app_id = str(uuid.uuid4())
@@ -222,8 +253,10 @@ async def employee_login(form: ProfileSetupForm):
         import json
 
         # 1. Verify credentials from Supabase profile_setups table
-        result = supabase.table("profile_setups").select("*").eq("email", form.email).execute()
-        records = result.data or []
+        records = []
+        if supabase is not None:
+            result = supabase.table("profile_setups").select("*").eq("email", form.email).execute()
+            records = result.data or []
 
         match = next((r for r in records if r.get("password") == form.password), None)
         if not match:
@@ -291,12 +324,17 @@ async def employee_login(form: ProfileSetupForm):
 async def submit_profile_setup(form: ProfileSetupForm):
     """Save profile setup credentials to Supabase"""
     try:
+        if supabase is None:
+            raise HTTPException(status_code=503, detail="Supabase is not configured")
+
         data = {
             "email": form.email,
             "password": form.password,
         }
         supabase.table("profile_setups").insert(data).execute()
         return {"success": True, "message": "Account credentials saved."}
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to save credentials: {str(e)}")
 
@@ -489,6 +527,13 @@ async def employee_login_by_code(form: EmployeeLoginCodeForm):
 async def get_passkey_orders():
     """Get passkey orders from Supabase for admin dashboard."""
     try:
+        local_path = os.path.join(os.path.dirname(__file__), "..", "data", "passkey_orders.json")
+
+        if supabase is None:
+            rows = _load_json_list(local_path)
+            rows.sort(key=lambda item: str(item.get("created_at") or ""), reverse=True)
+            return rows
+
         result = supabase.table("passkey_orders").select("*").order("created_at", desc=True).execute()
         return result.data or []
     except Exception as e:
@@ -508,7 +553,28 @@ async def submit_passkey_order(form: PasskeyOrderForm):
             "pincode": form.pincode,
             "quantity": form.quantity,
         }
-        result = supabase.table("passkey_orders").insert(data).execute()
+
+        if supabase is not None:
+            try:
+                supabase.table("passkey_orders").insert(data).execute()
+            except Exception:
+                local_path = os.path.join(os.path.dirname(__file__), "..", "data", "passkey_orders.json")
+                rows = _load_json_list(local_path)
+                rows.append({
+                    "id": str(uuid.uuid4()),
+                    **data,
+                    "created_at": datetime.now().isoformat(),
+                })
+                _save_json_list(local_path, rows)
+        else:
+            local_path = os.path.join(os.path.dirname(__file__), "..", "data", "passkey_orders.json")
+            rows = _load_json_list(local_path)
+            rows.append({
+                "id": str(uuid.uuid4()),
+                **data,
+                "created_at": datetime.now().isoformat(),
+            })
+            _save_json_list(local_path, rows)
 
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         return {
