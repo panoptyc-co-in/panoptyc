@@ -469,6 +469,15 @@ async def employee_login_by_code(form: EmployeeLoginCodeForm):
 
 # ---------- Submit Passkey Order ----------
 
+@router.get("/api/passkey-orders")
+async def get_passkey_orders():
+    """Get passkey orders from Supabase for admin dashboard."""
+    try:
+        result = supabase.table("passkey_orders").select("*").order("created_at", desc=True).execute()
+        return result.data or []
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to load passkey orders: {str(e)}")
+
 @router.post("/api/submit-passkey-order")
 async def submit_passkey_order(form: PasskeyOrderForm):
     """Save passkey order form data to Supabase"""

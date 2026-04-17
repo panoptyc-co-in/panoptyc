@@ -1,18 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { createClient } from "@supabase/supabase-js";
 import {
   Shield, LogOut, RefreshCw, Download, FileSpreadsheet,
   Users, UserCheck, Package, Search, ChevronDown,
   ChevronUp, AlertCircle, CheckCircle, Loader2, ArrowLeft,
   TrendingUp, Clock, Database, Server
 } from "lucide-react";
-
-// Supabase client
-const supabase = createClient(
-  process.env.REACT_APP_SUPABASE_URL || "",
-  process.env.REACT_APP_SUPABASE_ANON_KEY || ""
-);
 
 // ── Utility: Export to CSV ─────────────────────────────────────────────────
 const exportCSV = (data, filename) => {
@@ -410,7 +403,7 @@ const DataTable = ({ columns, data, loading, error, onRefresh, onExportCSV, onEx
 // ── Main Dashboard ─────────────────────────────────────────────────────────
 const AdminDashboard = () => {
   const navigate = useNavigate();
-  const API_URL = process.env.REACT_APP_BACKEND_URL;
+  const API_URL = process.env.REACT_APP_BACKEND_URL || "/_/backend";
   const [activeTab, setActiveTab] = useState("applications");
   const [isMobile, setIsMobile] = useState(
     typeof window !== "undefined" ? window.innerWidth <= 768 : false
@@ -452,13 +445,14 @@ const AdminDashboard = () => {
     setLoadingMap((prev) => ({ ...prev, [table]: true }));
     setErrorMap((prev) => ({ ...prev, [table]: null }));
     try {
-      const { data, error } = await supabase
-        .from(table)
-        .select("*")
-        .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (table !== "passkey_orders") {
+        throw new Error("Unsupported table fetch");
+      }
 
-      let rows = data || [];
+      const response = await fetch(`${API_URL}/api/passkey-orders`);
+      if (!response.ok) throw new Error("Failed to load passkey orders");
+
+      let rows = (await response.json()) || [];
       if (table === "passkey_orders") {
         const deleted = await fetchDeletedRecords();
         const deletedIds = new Set((deleted?.[table] || []).map((id) => String(id)));
@@ -471,7 +465,7 @@ const AdminDashboard = () => {
     } finally {
       setLoadingMap((prev) => ({ ...prev, [table]: false }));
     }
-  }, [fetchDeletedRecords]);
+  }, [API_URL, fetchDeletedRecords]);
 
   const fetchApplications = useCallback(async () => {
     setLoadingMap((prev) => ({ ...prev, applications: true }));
@@ -880,7 +874,7 @@ const AdminDashboard = () => {
                     {currentTab.label}
                   </h2>
                   <p style={{ color: "rgba(255,255,255,0.35)", fontSize: isMobile ? "11px" : "12px", margin: 0 }}>
-                    {currentTab.data.length} total records · {activeTab === "complete_profiles" ? "node/local" : `supabase/${activeTab}`}
+                    {currentTab.data.length} total records · {activeTab === "complete_profiles" ? "node/local" : "backend/api"}
                   </p>
                 </div>
               </div>
