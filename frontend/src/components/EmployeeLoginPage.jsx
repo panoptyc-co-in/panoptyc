@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Lock, LogIn, Shield, CheckCircle, KeyRound, ShoppingCart, XCircle } from "lucide-react";
+import { apiUrl, readJsonSafely } from "../lib/api";
 
 const EmployeeLoginPage = () => {
   const navigate = useNavigate();
@@ -19,13 +20,12 @@ const EmployeeLoginPage = () => {
     setEmployee(null);
     setLoading(true);
     try {
-      const API_URL = process.env.REACT_APP_BACKEND_URL;
-      const response = await fetch(`${API_URL}/api/employee-login-code`, {
+      const response = await fetch(apiUrl("/api/employee-login-code"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ employeeCode: employeeId.trim().toUpperCase() }),
       });
-      const result = await response.json();
+      const result = await readJsonSafely(response);
       if (response.ok && result.success) {
         setEmployee(result.employee);
         setLoginSuccess(true);

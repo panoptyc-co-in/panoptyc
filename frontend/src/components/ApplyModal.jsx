@@ -4,6 +4,7 @@ import {
   DialogContent,
 } from "./ui/dialog";
 import { User, MapPin, Send, X, Mail } from "lucide-react";
+import { apiUrl, readJsonSafely } from "../lib/api";
 
 const ApplyModal = ({ open, onClose }) => {
   const [formData, setFormData] = useState({
@@ -19,8 +20,7 @@ const ApplyModal = ({ open, onClose }) => {
     setLoading(true);
     
     try {
-      const API_URL = process.env.REACT_APP_BACKEND_URL;
-      const response = await fetch(`${API_URL}/api/submit-application`, {
+      const response = await fetch(apiUrl("/api/submit-application"), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -28,7 +28,7 @@ const ApplyModal = ({ open, onClose }) => {
         body: JSON.stringify(formData),
       });
 
-      const result = await response.json();
+      const result = await readJsonSafely(response);
       
       if (response.ok && result.success) {
         alert(`✅ ${result.message}\n\nThank you, ${formData.fullName}! Your application has been submitted successfully.`);

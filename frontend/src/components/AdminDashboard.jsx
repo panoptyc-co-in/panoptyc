@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { apiUrl, readJsonSafely } from "../lib/api";
 import {
   Shield, LogOut, RefreshCw, Download, FileSpreadsheet,
   Users, UserCheck, Package, Search, ChevronDown,
@@ -403,7 +404,6 @@ const DataTable = ({ columns, data, loading, error, onRefresh, onExportCSV, onEx
 // ── Main Dashboard ─────────────────────────────────────────────────────────
 const AdminDashboard = () => {
   const navigate = useNavigate();
-  const API_URL = process.env.REACT_APP_BACKEND_URL || "/_/backend";
   const [activeTab, setActiveTab] = useState("applications");
   const [isMobile, setIsMobile] = useState(
     typeof window !== "undefined" ? window.innerWidth <= 768 : false
@@ -433,13 +433,14 @@ const AdminDashboard = () => {
 
   const fetchDeletedRecords = useCallback(async () => {
     try {
-      const response = await fetch(`${API_URL}/api/deleted-records`);
+      const response = await fetch(apiUrl("/api/deleted-records"));
       if (!response.ok) return {};
-      return await response.json();
+      const payload = await readJsonSafely(response);
+      return payload && typeof payload === "object" ? payload : {};
     } catch {
       return {};
     }
-  }, [API_URL]);
+  }, []);
 
   const fetchTable = useCallback(async (table, setter) => {
     setLoadingMap((prev) => ({ ...prev, [table]: true }));
@@ -449,10 +450,11 @@ const AdminDashboard = () => {
         throw new Error("Unsupported table fetch");
       }
 
-      const response = await fetch(`${API_URL}/api/passkey-orders`);
+      const response = await fetch(apiUrl("/api/passkey-orders"));
       if (!response.ok) throw new Error("Failed to load passkey orders");
 
-      let rows = (await response.json()) || [];
+      const payload = await readJsonSafely(response);
+      let rows = Array.isArray(payload) ? payload : [];
       if (table === "passkey_orders") {
         const deleted = await fetchDeletedRecords();
         const deletedIds = new Set((deleted?.[table] || []).map((id) => String(id)));
@@ -465,28 +467,29 @@ const AdminDashboard = () => {
     } finally {
       setLoadingMap((prev) => ({ ...prev, [table]: false }));
     }
-  }, [API_URL, fetchDeletedRecords]);
+  }, [fetchDeletedRecords]);
 
   const fetchApplications = useCallback(async () => {
     setLoadingMap((prev) => ({ ...prev, applications: true }));
     setErrorMap((prev) => ({ ...prev, applications: null }));
     try {
-      const response = await fetch(`${API_URL}/api/applications`);
+      const response = await fetch(apiUrl("/api/applications"));
       if (!response.ok) throw new Error("Failed to load applications data");
-      const data = await response.json();
+      const payload = await readJsonSafely(response);
+      const data = Array.isArray(payload) ? payload : [];
       setApplications((data || []).sort((a, b) => new Date(b.created_at) - new Date(a.created_at)));
     } catch (err) {
       setErrorMap((prev) => ({ ...prev, applications: err.message || "Failed to load data" }));
     } finally {
       setLoadingMap((prev) => ({ ...prev, applications: false }));
     }
-  }, [API_URL]);
+  }, []);
 
   const handleDelete = async (tabId, row) => {
     if (!window.confirm("Are you sure you want to delete this record?")) return;
     
     try {
-      const response = await fetch(`${API_URL}/api/delete-record`, {
+      const response = await fetch(apiUrl("/api/delete-record"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -496,7 +499,7 @@ const AdminDashboard = () => {
           email: row.email,
         })
       });
-      const result = await response.json();
+      const result = await readJsonSafely(response);
       if (!response.ok || !result.success) {
         throw new Error(result.detail || "Failed to delete record from backend.");
       }
@@ -528,16 +531,17 @@ const AdminDashboard = () => {
     setLoadingMap((prev) => ({ ...prev, complete_profiles: true }));
     setErrorMap((prev) => ({ ...prev, complete_profiles: null }));
     try {
-      const response = await fetch(`${API_URL}/api/complete-profiles`);
+      const response = await fetch(apiUrl("/api/complete-profiles"));
       if (!response.ok) throw new Error("Failed to load local data");
-      const data = await response.json();
+      const payload = await readJsonSafely(response);
+      const data = Array.isArray(payload) ? payload : [];
       setCompleteProfiles((data || []).sort((a,b) => new Date(b.created_at) - new Date(a.created_at)));
     } catch (err) {
       setErrorMap((prev) => ({ ...prev, complete_profiles: err.message || "Failed to load data" }));
     } finally {
       setLoadingMap((prev) => ({ ...prev, complete_profiles: false }));
     }
-  }, [API_URL]);
+  }, []);
 
   useEffect(() => {
     fetchApplications();

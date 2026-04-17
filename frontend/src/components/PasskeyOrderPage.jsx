@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Shield, Truck, Banknote, Star, Check, Zap, Globe, Fingerprint, Smartphone, ShieldCheck, CheckCircle2, KeyRound, Lock, Package } from "lucide-react";
+import { apiUrl, readJsonSafely } from "../lib/api";
 
 const PasskeyOrderPage = () => {
   const navigate = useNavigate();
@@ -95,14 +96,13 @@ const PasskeyOrderPage = () => {
     setLoading(true);
 
     try {
-      const API_URL = process.env.REACT_APP_BACKEND_URL;
-      const response = await fetch(`${API_URL}/api/submit-passkey-order`, {
+      const response = await fetch(apiUrl("/api/submit-passkey-order"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
-      const result = await response.json();
+      const result = await readJsonSafely(response);
 
       if (response.ok && result.success) {
         setSubmitted(true);

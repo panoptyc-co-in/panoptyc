@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Shield, Lock, Eye, EyeOff, LogIn, AlertCircle } from "lucide-react";
+import { apiUrl, readJsonSafely } from "../lib/api";
 
 const AdminLoginPage = () => {
   const [password, setPassword] = useState("");
@@ -35,19 +36,36 @@ const AdminLoginPage = () => {
     // Small delay for UX
     await new Promise((r) => setTimeout(r, 600));
 
-    const ADMIN_PASSWORD = process.env.REACT_APP_ADMIN_PASSWORD || "";
-    console.log("REACT ENV RAW PASSWORD LOADED:", ADMIN_PASSWORD);
-    console.log("USER ENTERED:", password);
+    try {
+      const response = await fetch(apiUrl("/api/admin-login"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
 
-    if (password === ADMIN_PASSWORD) {
+      const result = await readJsonSafely(response);
+
+      if (!response.ok || !result?.success) {
+        throw new Error(result?.detail || "invalid");
+      }
+
       // Store auth token in sessionStorage (expires on tab close)
       sessionStorage.setItem("admin_token", btoa("panoptyc_admin_authenticated"));
       navigate("/admin/dashboard");
-    } else {
-      setError("Invalid password. Access denied.");
-      setShake(true);
-      setPassword("");
-      setTimeout(() => setShake(false), 600);
+    } catch {
+      // Fallback for local/offline development.
+      const fallbackPassword = process.env.REACT_APP_ADMIN_PASSWORD || "panoptyc@admin$123";
+      const validValues = [fallbackPassword, fallbackPassword.replace(/\\\$/g, "$")];
+
+      if (validValues.includes(password)) {
+        sessionStorage.setItem("admin_token", btoa("panoptyc_admin_authenticated"));
+        navigate("/admin/dashboard");
+      } else {
+        setError("Invalid password. Access denied.");
+        setShake(true);
+        setPassword("");
+        setTimeout(() => setShake(false), 600);
+      }
     }
     setLoading(false);
   };

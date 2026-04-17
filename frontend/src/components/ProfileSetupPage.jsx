@@ -5,6 +5,7 @@ import {
   DialogContent,
 } from "./ui/dialog";
 import { Mail, Lock, UserPlus, LogIn, CheckCircle, Copy, Check, AlertCircle, LogOut, User, Phone, MapPin, GraduationCap } from "lucide-react";
+import { apiUrl, readJsonSafely } from "../lib/api";
 
 // ─── Reusable Employee Success Card ──────────────────────────────────────────
 export const EmployeeSuccessCard = ({ session, onClose, onLogout }) => {
@@ -121,7 +122,6 @@ export const EmployeeSuccessCard = ({ session, onClose, onLogout }) => {
 // ─── Main Modal ───────────────────────────────────────────────────────────────
 const ProfileSetupModal = ({ open, onClose }) => {
   const navigate = useNavigate();
-  const API_URL = process.env.REACT_APP_BACKEND_URL;
   const [mode, setMode] = useState("login"); // "login" | "register"
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -160,10 +160,10 @@ const ProfileSetupModal = ({ open, onClose }) => {
         const email = (parsed?.email || "").trim().toLowerCase();
         if (!email) return;
 
-        const response = await fetch(`${API_URL}/api/deleted-records`);
+        const response = await fetch(apiUrl("/api/deleted-records"));
         if (!response.ok) return;
 
-        const deleted = await response.json();
+        const deleted = await readJsonSafely(response);
         const disabledEmails = (deleted?.profile_setups || []).map((item) => String(item).trim().toLowerCase());
 
         if (disabledEmails.includes(email)) {
@@ -190,7 +190,7 @@ const ProfileSetupModal = ({ open, onClose }) => {
       clearInterval(intervalId);
       sessionInvalidNotifiedRef.current = false;
     };
-  }, [API_URL, open]);
+  }, [open]);
 
   const resetForm = () => {
     setEmail("");
@@ -233,12 +233,12 @@ const ProfileSetupModal = ({ open, onClose }) => {
     // Login
     setLoading(true);
     try {
-      const response = await fetch(`${API_URL}/api/employee-login`, {
+      const response = await fetch(apiUrl("/api/employee-login"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-      const result = await response.json();
+      const result = await readJsonSafely(response);
       if (response.ok && result.success) {
         // Save full session to localStorage (includes all profile fields)
         const newSession = {

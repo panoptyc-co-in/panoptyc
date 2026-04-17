@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ArrowLeft, FileText, Copy, Check, CheckCircle, AlertCircle } from "lucide-react";
+import { apiUrl, readJsonSafely } from "../lib/api";
 
 // Generate unique PAN employee code: PAN + YYMM + random 6 alphanumeric chars
 const generateEmployeeCode = () => {
@@ -110,14 +111,13 @@ const AgreementPage = () => {
     }
 
     setLoading(true);
-    const API_URL = process.env.REACT_APP_BACKEND_URL;
     try {
       // Get the signature as base64
       const signatureBase64 = canvasRef.current?.toDataURL("image/png") || "";
 
       // 1. Submit basic account info to Supabase
       if (password) {
-        const setupResponse = await fetch(`${API_URL}/api/submit-profile-setup`, {
+        const setupResponse = await fetch(apiUrl("/api/submit-profile-setup"), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email: formData.email, password }),
@@ -135,13 +135,13 @@ const AgreementPage = () => {
         termsAgreed: true,
       };
 
-      const response = await fetch(`${API_URL}/api/submit-complete-profile`, {
+      const response = await fetch(apiUrl("/api/submit-complete-profile"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
 
-      const result = await response.json();
+      const result = await readJsonSafely(response);
       if (response.ok && result.success) {
         // Save full session to localStorage (all profile fields for the modal card)
         const session = {

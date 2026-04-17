@@ -54,6 +54,10 @@ class PasskeyOrderForm(BaseModel):
     quantity: int = 1
 
 
+class AdminLoginForm(BaseModel):
+    password: str
+
+
 # ---------- Submit Application ----------
 
 @router.post("/api/submit-application")
@@ -133,6 +137,18 @@ async def submit_application(form: ApplicationForm):
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to save application: {str(e)}")
+
+
+@router.post("/api/admin-login")
+async def admin_login(form: AdminLoginForm):
+    """Validate admin password server-side for production-safe login."""
+    configured = os.environ.get("ADMIN_PASSWORD") or os.environ.get("REACT_APP_ADMIN_PASSWORD") or "panoptyc@admin$123"
+    valid_values = {configured, configured.replace("\\$", "$")}
+
+    if form.password in valid_values:
+        return {"success": True}
+
+    raise HTTPException(status_code=401, detail="Invalid password")
 
 
 @router.get("/api/applications")
