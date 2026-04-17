@@ -1,5 +1,8 @@
 {
   "devDependencies": {
     "eslint": "^8.57.1"
+  },
+  "dependencies": {
+    "date-fns": "^3.6.0"
   }
 }
