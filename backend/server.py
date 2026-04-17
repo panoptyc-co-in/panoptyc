@@ -33,10 +33,27 @@ from routes.forms import router as forms_router
 app.include_router(api_router)
 app.include_router(forms_router)
 
+cors_origins = [
+    origin.strip()
+    for origin in os.environ.get('CORS_ORIGINS', '').split(',')
+    if origin.strip()
+]
+cors_allow_credentials = os.environ.get('CORS_ALLOW_CREDENTIALS', 'false').lower() == 'true'
+raw_cors_origin_regex = os.environ.get('CORS_ORIGIN_REGEX')
+cors_origin_regex = (
+    raw_cors_origin_regex
+    if raw_cors_origin_regex is not None
+    else r'https://.*\.trycloudflare\.com|http://localhost(:\d+)?|http://127\.0\.0\.1(:\d+)?'
+)
+
+if raw_cors_origin_regex == '':
+    cors_origin_regex = None
+
 app.add_middleware(
     CORSMiddleware,
-    allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
+    allow_credentials=cors_allow_credentials,
+    allow_origins=cors_origins,
+    allow_origin_regex=cors_origin_regex,
     allow_methods=["*"],
     allow_headers=["*"],
 )

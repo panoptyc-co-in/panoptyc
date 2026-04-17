@@ -8,7 +8,16 @@ const AdminLoginPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [shake, setShake] = useState(false);
+  const [isMobile, setIsMobile] = useState(
+    typeof window !== "undefined" ? window.innerWidth <= 768 : false
+  );
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
 
   // If already authenticated, redirect to dashboard
   useEffect(() => {
@@ -54,6 +63,7 @@ const AdminLoginPage = () => {
         fontFamily: "'Inter', sans-serif",
         position: "relative",
         overflow: "hidden",
+        padding: isMobile ? "16px 12px" : 0,
       }}
     >
       {/* Animated background glow */}
@@ -98,8 +108,8 @@ const AdminLoginPage = () => {
         className={shake ? "shake-animation" : ""}
         style={{
           width: "100%",
-          maxWidth: "440px",
-          margin: "0 20px",
+          maxWidth: isMobile ? "390px" : "440px",
+          margin: isMobile ? 0 : "0 20px",
           position: "relative",
           zIndex: 1,
         }}
@@ -110,40 +120,40 @@ const AdminLoginPage = () => {
             background: "rgba(255,255,255,0.04)",
             backdropFilter: "blur(20px)",
             border: "1px solid rgba(255,255,255,0.08)",
-            borderRadius: "24px",
-            padding: "48px 40px",
+            borderRadius: isMobile ? "20px" : "24px",
+            padding: isMobile ? "30px 20px" : "48px 40px",
             boxShadow: "0 25px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1)",
           }}
         >
           {/* Shield icon */}
-          <div style={{ textAlign: "center", marginBottom: "32px" }}>
+          <div style={{ textAlign: "center", marginBottom: isMobile ? "24px" : "32px" }}>
             <div
               style={{
-                width: "72px",
-                height: "72px",
+                width: isMobile ? "62px" : "72px",
+                height: isMobile ? "62px" : "72px",
                 background: "linear-gradient(135deg, rgba(239,68,68,0.2), rgba(239,68,68,0.08))",
                 border: "1px solid rgba(239,68,68,0.3)",
-                borderRadius: "20px",
+                borderRadius: isMobile ? "16px" : "20px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                margin: "0 auto 20px",
+                margin: isMobile ? "0 auto 14px" : "0 auto 20px",
                 boxShadow: "0 0 30px rgba(239,68,68,0.15)",
               }}
             >
-              <Shield size={32} color="#EF4444" />
+              <Shield size={isMobile ? 28 : 32} color="#EF4444" />
             </div>
 
             <img
               src="https://customer-assets.emergentagent.com/job_remote-lead-hiring/artifacts/yyk8ba47_Panoptyc-Logo-HiRes.jpg"
               alt="Panoptyc"
-              style={{ height: "32px", width: "auto", objectFit: "contain", marginBottom: "16px" }}
+              style={{ height: isMobile ? "62px" : "77px", width: "auto", objectFit: "contain", marginBottom: isMobile ? "12px" : "16px" }}
             />
 
             <h1
               style={{
                 color: "#fff",
-                fontSize: "22px",
+                fontSize: isMobile ? "20px" : "22px",
                 fontWeight: "700",
                 margin: "0 0 6px",
                 letterSpacing: "-0.3px",
@@ -151,7 +161,7 @@ const AdminLoginPage = () => {
             >
               Admin Portal
             </h1>
-            <p style={{ color: "rgba(255,255,255,0.4)", fontSize: "14px", margin: 0 }}>
+            <p style={{ color: "rgba(255,255,255,0.4)", fontSize: isMobile ? "13px" : "14px", margin: 0 }}>
               Restricted access — authorized personnel only
             </p>
           </div>
@@ -192,14 +202,14 @@ const AdminLoginPage = () => {
                   autoFocus
                   style={{
                     width: "100%",
-                    padding: "14px 48px 14px 44px",
+                    padding: isMobile ? "13px 44px 13px 40px" : "14px 48px 14px 44px",
                     background: "rgba(255,255,255,0.05)",
                     border: error
                       ? "1px solid rgba(239,68,68,0.6)"
                       : "1px solid rgba(255,255,255,0.1)",
                     borderRadius: "12px",
                     color: "#fff",
-                    fontSize: "15px",
+                    fontSize: isMobile ? "14px" : "15px",
                     outline: "none",
                     boxSizing: "border-box",
                     transition: "border-color 0.2s",
@@ -253,7 +263,7 @@ const AdminLoginPage = () => {
               disabled={loading || !password}
               style={{
                 width: "100%",
-                padding: "14px",
+                padding: isMobile ? "13px" : "14px",
                 background:
                   loading || !password
                     ? "rgba(239,68,68,0.3)"
@@ -261,7 +271,7 @@ const AdminLoginPage = () => {
                 border: "none",
                 borderRadius: "12px",
                 color: "#fff",
-                fontSize: "15px",
+                fontSize: isMobile ? "14px" : "15px",
                 fontWeight: "600",
                 cursor: loading || !password ? "not-allowed" : "pointer",
                 display: "flex",
@@ -301,8 +311,8 @@ const AdminLoginPage = () => {
             style={{
               textAlign: "center",
               color: "rgba(255,255,255,0.2)",
-              fontSize: "12px",
-              marginTop: "24px",
+              fontSize: isMobile ? "11px" : "12px",
+              marginTop: isMobile ? "18px" : "24px",
               marginBottom: 0,
             }}
           >

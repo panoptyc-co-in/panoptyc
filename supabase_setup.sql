@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS applications (
   id          UUID        DEFAULT gen_random_uuid() PRIMARY KEY,
   full_name   TEXT        NOT NULL,
   phone       TEXT        NOT NULL,
+  email       TEXT        DEFAULT '',
   city        TEXT        NOT NULL,
   created_at  TIMESTAMPTZ DEFAULT NOW()
 );
@@ -63,3 +64,16 @@ CREATE POLICY "Allow anon select profile_setups"
 
 CREATE POLICY "Allow anon select passkey_orders"
   ON passkey_orders FOR SELECT TO anon USING (true);
+
+-- ============================================================
+-- Existing Project Migration (Run once if table already exists)
+-- ============================================================
+
+-- Ensure applications.email exists for Apply form + admin dashboard.
+ALTER TABLE applications
+  ADD COLUMN IF NOT EXISTS email TEXT DEFAULT '';
+
+-- Normalize existing rows so admin always sees a string value.
+UPDATE applications
+SET email = ''
+WHERE email IS NULL;

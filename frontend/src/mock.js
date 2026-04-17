@@ -75,7 +75,7 @@ export const industries = [
   {
     title: "Grocery",
     description: "Complete loss prevention for grocery stores from entrance to checkout.",
-    image: "https://images.unsplash.com/photo-1604719312566-8912e9227c6a?auto=format&fit=crop&w=400&q=80",
+    image: "https://images.unsplash.com/photo-1710750483431-d8eb4312d971?auto=format&fit=crop&w=400&q=80",
   },
   {
     title: "Self-Checkout",
@@ -85,17 +85,17 @@ export const industries = [
   {
     title: "Micro Markets",
     description: "Unattended retail spaces monitored 24/7 with smart video analytics.",
-    image: "https://images.unsplash.com/photo-1541614101331-1a5a3a194e92?auto=format&fit=crop&w=400&q=80",
+    image: "https://images.unsplash.com/photo-1765648496288-e1760f547711?auto=format&fit=crop&w=400&q=80",
   },
   {
     title: "Dining",
     description: "Protect dining establishments from inventory shrink and employee theft.",
-    image: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=400&q=80",
+    image: "https://images.unsplash.com/photo-1769485016826-a7d5bfe50119?auto=format&fit=crop&w=400&q=80",
   },
   {
     title: "Convenience Stores",
     description: "Round-the-clock surveillance for high-traffic convenience retail locations.",
-    image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?auto=format&fit=crop&w=400&q=80",
+    image: "https://images.unsplash.com/photo-1759153820384-12c9ddf8bd8d?auto=format&fit=crop&w=400&q=80",
   },
 ];
 
@@ -246,26 +246,26 @@ export const customers = ["Bernick's", "Premier Canteen", "Mattress Firm", "Fres
 export const faqItems = [
   {
     question: "What does a Remote Video Surveillance Analyst do?",
-    answer: "As a Remote Video Surveillance Analyst at Panoptyc, you'll monitor live and recorded video feeds from retail stores across the United States. You'll use our AI-powered platform to identify suspicious activities, document theft incidents, and collaborate with US-based loss prevention teams to reduce retail shrink.",
+    answer: "You'll monitor live and recorded video feeds from retail stores across the US using Panoptyc's AI-powered platform. Your job is to identify theft, suspicious activities, and policy violations, then document and report them.",
   },
   {
     question: "What are the work hours?",
-    answer: "Work hours are aligned with US business hours, which means you'll typically work during Indian night hours (approx. 6:30 PM to 6:30 AM IST). You'll have a fixed 8-hour shift with a 30-minute break. Specific shift times will be communicated during onboarding.",
+    answer: "This is a full-time position with night shifts aligned with US retail store hours. Shifts are approximately 8 hours, typically starting in the evening IST. Exact schedules are discussed during onboarding.",
   },
   {
     question: "Do I need any prior experience?",
-    answer: "No prior surveillance or security experience is required. We welcome freshers and experienced candidates alike. Panoptyc provides comprehensive paid training on our AI platform before you begin active monitoring duties.",
+    answer: "No prior surveillance experience is required. We provide comprehensive free training on our AI platform. You need basic English skills, attention to detail, and a stable internet connection.",
   },
   {
     question: "What equipment do I need?",
-    answer: "You'll need your own laptop or desktop computer (Windows 10/11 or macOS) with a minimum of 8GB RAM, a functional webcam, and a stable internet connection with at least 10 Mbps speed. No additional hardware purchases are required.",
+    answer: "You need your own laptop or desktop computer with a webcam and a stable internet connection (minimum 10 Mbps). The company provides all necessary software and platform access.",
   },
   {
     question: "When will I receive my salary?",
-    answer: "Your salary of ₹35,000 per month will be credited to your bank account on the 1st of every month via direct bank transfer (NEFT/IMPS). You'll also receive a detailed salary slip for each month.",
+    answer: "Salary of ₹35,000 is paid monthly by the 5th of each subsequent month directly to your bank account.",
   },
   {
     question: "Is this a legitimate work-from-home job?",
-    answer: "Absolutely. Panoptyc is a US-based AI company backed by NVIDIA Inception Program and AWS Partner Network, protecting over 20,000 retail stores. You'll receive a signed employment agreement, employee ID, and all legal documentation. This is 100% genuine remote employment.",
+    answer: "Yes, Panoptyc is a US-based company trusted by 20,000+ retail stores, backed by NVIDIA and AWS. We have a proven track record of catching 400,000+ thefts annually. You can verify us at panoptyc.com.",
   },
 ];

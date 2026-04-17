@@ -1,136 +1,231 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Lock, LogIn, Shield } from "lucide-react";
+import { ArrowLeft, Lock, LogIn, Shield, CheckCircle, KeyRound, ShoppingCart, XCircle } from "lucide-react";
 
 const EmployeeLoginPage = () => {
   const navigate = useNavigate();
   const [employeeId, setEmployeeId] = useState("");
   const [loading, setLoading] = useState(false);
+  const [loginSuccess, setLoginSuccess] = useState(false); // show passkey section
+  const [employee, setEmployee] = useState(null);
+  const [error, setError] = useState(""); // inline error message
+
+  const isValidFormat = employeeId.trim().toUpperCase().startsWith("PAN") && employeeId.trim().length >= 6;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+    setLoginSuccess(false);
+    setEmployee(null);
     setLoading(true);
-    await new Promise((res) => setTimeout(res, 2000));
-    setLoading(false);
-    alert("Login functionality coming soon!");
+    try {
+      const API_URL = process.env.REACT_APP_BACKEND_URL;
+      const response = await fetch(`${API_URL}/api/employee-login-code`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ employeeCode: employeeId.trim().toUpperCase() }),
+      });
+      const result = await response.json();
+      if (response.ok && result.success) {
+        setEmployee(result.employee);
+        setLoginSuccess(true);
+      } else {
+        setError(result.detail || "Incorrect Employee ID. Please check and try again.");
+      }
+    } catch (err) {
+      setError("Incorrect Employee ID. Please check and try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden" style={{ background: "#0a0e1a" }}>
-      {/* Background pattern */}
-      <div 
-        className="absolute inset-0 opacity-20"
-        style={{
-          backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 0)`,
-          backgroundSize: "40px 40px"
-        }}
-      />
-
-      {/* Back to Home link */}
-      <div className="relative z-10 pt-8 px-4">
+    <div
+      className="min-h-screen flex flex-col"
+      style={{ background: "#080c18", fontFamily: "'Inter', sans-serif" }}
+    >
+      {/* Back to Home */}
+      <div className="px-6 pt-7 pb-0">
         <button
           onClick={() => navigate("/")}
-          className="flex items-center gap-2 text-gray-400 hover:text-gray-300 transition-colors text-sm"
+          className="flex items-center gap-1.5 text-[13px] text-gray-500 hover:text-gray-300 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Home
         </button>
       </div>
 
-      {/* Main Content */}
-      <div className="relative z-10 flex items-center justify-center min-h-screen px-4 py-12">
-        <div 
-          className="w-full max-w-md rounded-3xl p-12 shadow-2xl border"
-          style={{ 
-            background: "linear-gradient(135deg, #1a2332 0%, #0f1621 100%)",
-            borderColor: "rgba(255,255,255,0.08)"
+      {/* Centered Card */}
+      <div className="flex-1 flex items-center justify-center px-4 py-8">
+        <div
+          className="w-full max-w-[400px] rounded-[22px] p-7"
+          style={{
+            background: "#131929",
+            border: "1px solid rgba(255,255,255,0.07)",
           }}
         >
           {/* Logo */}
-          <div className="flex justify-center mb-8">
-            <div className="bg-white rounded-2xl px-6 py-2">
-              <img 
-                src="https://customer-assets.emergentagent.com/job_remote-lead-hiring/artifacts/yyk8ba47_Panoptyc-Logo-HiRes.jpg" 
-                alt="Panoptyc" 
-                className="h-12 w-auto"
+          <div className="flex justify-center mb-5">
+            <div
+              className="px-5 py-2 rounded-[12px]"
+              style={{ background: "#fff" }}
+            >
+              <img
+                src="https://customer-assets.emergentagent.com/job_remote-lead-hiring/artifacts/yyk8ba47_Panoptyc-Logo-HiRes.jpg"
+                alt="Panoptyc"
+                className="h-9 w-auto"
               />
             </div>
           </div>
 
           {/* Lock Icon */}
-          <div className="flex justify-center mb-8">
-            <div 
-              className="w-16 h-16 rounded-2xl flex items-center justify-center"
-              style={{ 
-                background: "rgba(30,41,59,0.8)",
-                border: "1px solid rgba(255,255,255,0.1)"
+          <div className="flex justify-center mb-5">
+            <div
+              className="w-14 h-14 rounded-[14px] flex items-center justify-center"
+              style={{
+                background: "rgba(255,255,255,0.06)",
+                border: "1px solid rgba(255,255,255,0.1)",
               }}
             >
-              <Lock className="w-8 h-8 text-gray-400" />
+              <Lock className="w-6 h-6 text-gray-300" strokeWidth={1.8} />
             </div>
           </div>
 
           {/* Title */}
-          <div className="text-center mb-3">
-            <h1 className="text-3xl font-extrabold text-white mb-3">Employee Login</h1>
-            <p className="text-sm text-gray-400">
+          <div className="text-center mb-6">
+            <h1 className="text-[24px] font-bold text-white mb-1">
+              Employee Login
+            </h1>
+            <p className="text-[13px] text-gray-500">
               Enter your Employee ID to continue
             </p>
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="mt-8 space-y-6">
-            {/* Employee ID */}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Employee ID Input */}
             <div>
-              <label className="block text-sm font-medium text-gray-400 mb-3">
-                Employee ID *
+              <label className="block text-[12px] font-semibold text-gray-400 mb-1.5">
+                Employee ID <span className="text-red-400">*</span>
               </label>
               <div className="relative">
-                <Shield className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+                {/* Left icon: checkmark if valid format, else nothing */}
+                {isValidFormat && !error && (
+                  <CheckCircle
+                    className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4"
+                    style={{ color: "#22c55e" }}
+                  />
+                )}
+                {error && (
+                  <XCircle
+                    className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-red-400"
+                  />
+                )}
                 <input
                   type="text"
                   required
                   value={employeeId}
-                  onChange={(e) => setEmployeeId(e.target.value)}
+                  onChange={(e) => {
+                    setEmployeeId(e.target.value);
+                    setError("");
+                    setLoginSuccess(false);
+                  }}
                   placeholder="Enter your Employee ID"
-                  className="w-full pl-12 pr-4 py-4 text-base text-gray-300 placeholder-gray-600 rounded-2xl outline-none transition-all duration-200 focus:ring-2 focus:ring-red-500/40"
+                  className="w-full py-3 pr-4 text-[14px] text-gray-200 placeholder-gray-600 rounded-[10px] outline-none transition-all"
                   style={{
-                    background: "rgba(15,23,42,0.6)",
-                    border: "1px solid rgba(255,255,255,0.08)"
+                    paddingLeft: (isValidFormat || error) ? "2.6rem" : "1rem",
+                    background: "rgba(255,255,255,0.05)",
+                    border: error
+                      ? "1px solid rgba(239,68,68,0.5)"
+                      : loginSuccess
+                      ? "1px solid rgba(34,197,94,0.45)"
+                      : "1px solid rgba(255,255,255,0.1)",
                   }}
                 />
               </div>
+
+              {/* Inline error */}
+              {error && (
+                <div
+                  className="mt-2 flex items-center gap-2 text-[12px] font-medium text-red-400 rounded-lg px-3 py-2"
+                  style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}
+                >
+                  <XCircle size={13} className="flex-shrink-0" />
+                  {error}
+                </div>
+              )}
             </div>
 
             {/* Login Button */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-4 rounded-full font-bold text-base text-white transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed hover:shadow-xl active:scale-[0.98] flex items-center justify-center gap-3"
-              style={{ 
-                background: "linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%)"
-              }}
+              className="w-full py-3.5 rounded-[10px] font-bold text-[15px] text-white transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed hover:brightness-110 active:scale-[0.98] flex items-center justify-center gap-2"
+              style={{ background: "#ef4444" }}
             >
               {loading ? (
                 <>
-                  <div className="w-5 h-5 rounded-full border-2 border-white/30 border-t-white animate-spin" />
-                  Logging In...
+                  <div className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+                  Verifying...
                 </>
               ) : (
                 <>
-                  <LogIn className="w-5 h-5" />
+                  <LogIn className="w-4 h-4" />
                   Login
                 </>
               )}
             </button>
           </form>
 
-          {/* Security Footer */}
-          <div className="mt-8 pt-6 border-t border-gray-800">
-            <div className="flex items-center justify-center gap-2 text-xs text-gray-500">
-              <Shield className="w-4 h-4" />
-              <span>Secured by Panoptyc Authentication</span>
+          {/* ── Passkey Required Section (shown after valid login) ── */}
+          {loginSuccess && (
+            <div
+              className="mt-5 rounded-[14px] overflow-hidden"
+              style={{ border: "1px solid rgba(255,255,255,0.08)" }}
+            >
+              {/* Header row */}
+              <div
+                className="flex items-center gap-3 px-4 py-4"
+                style={{ background: "rgba(255,255,255,0.04)" }}
+              >
+                <div
+                  className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+                  style={{ background: "rgba(239,68,68,0.15)", border: "1px solid rgba(239,68,68,0.3)" }}
+                >
+                  <KeyRound className="w-5 h-5 text-red-400" />
+                </div>
+                <div>
+                  <p className="text-[14px] font-bold text-red-400">Passkey Required</p>
+                  <p className="text-[12px] text-gray-400 leading-snug mt-0.5">
+                    Please attach your YubiKey passkey device to login. Insert the security key into your USB port or tap via NFC to authenticate.
+                  </p>
+                </div>
+              </div>
+
+              {/* Divider */}
+              <div style={{ height: "1px", background: "rgba(255,255,255,0.07)" }} />
+
+              {/* Order section */}
+              <div className="px-4 py-4" style={{ background: "rgba(255,255,255,0.02)" }}>
+                <p className="text-[12px] text-gray-500 mb-3">Don't have a passkey?</p>
+                <button
+                  onClick={() => navigate("/passkey-order")}
+                  className="w-full py-3 rounded-[10px] font-bold text-[14px] text-white flex items-center justify-center gap-2 transition-all hover:brightness-110 active:scale-[0.98]"
+                  style={{ background: "#16a34a" }}
+                >
+                  <ShoppingCart className="w-4 h-4" />
+                  Order YubiKey Passkey
+                </button>
+              </div>
             </div>
+          )}
+
+          {/* Security Footer */}
+          <div className="flex items-center justify-center gap-1.5 mt-6">
+            <Shield className="w-3 h-3 text-gray-700" />
+            <span className="text-[11px] text-gray-600">
+              Secured by Panoptyc Authentication
+            </span>
           </div>
         </div>
       </div>

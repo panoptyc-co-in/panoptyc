@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { createClient } from "@supabase/supabase-js";
 import {
   Shield, LogOut, RefreshCw, Download, FileSpreadsheet,
-  Users, UserCircle, Package, Search, ChevronDown,
+  Users, UserCheck, Package, Search, ChevronDown,
   ChevronUp, AlertCircle, CheckCircle, Loader2, ArrowLeft,
-  TrendingUp, Clock, Database
+  TrendingUp, Clock, Database, Server
 } from "lucide-react";
 
 // Supabase client
@@ -37,39 +37,57 @@ const exportCSV = (data, filename) => {
 };
 
 // ── Utility: Export to Excel (XLSX via SheetJS) ────────────────────────────
+const sanitizeForExport = (data) =>
+  data.map((row) => {
+    const clean = {};
+    for (const [k, v] of Object.entries(row)) {
+      // Skip base64 image fields — they're too large and crash Excel
+      if (typeof v === "string" && v.startsWith("data:image")) {
+        clean[k] = "[Image — see admin panel]";
+      } else {
+        clean[k] = v;
+      }
+    }
+    return clean;
+  });
+
 const exportExcel = async (data, filename) => {
   if (!data.length) return;
   try {
     const XLSX = await import("xlsx");
-    const ws = XLSX.utils.json_to_sheet(data);
+    const clean = sanitizeForExport(data);
+    const ws = XLSX.utils.json_to_sheet(clean);
+    // Auto column widths
+    const cols = Object.keys(clean[0]).map((k) => ({ wch: Math.max(k.length + 2, 18) }));
+    ws["!cols"] = cols;
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+    XLSX.utils.book_append_sheet(wb, ws, "Data");
     XLSX.writeFile(wb, filename);
   } catch (err) {
     console.error("Excel export error:", err);
-    alert("Excel export failed. Trying CSV instead…");
-    exportCSV(data, filename.replace(".xlsx", ".csv"));
+    alert("Excel export failed. Downloading CSV instead…");
+    exportCSV(sanitizeForExport(data), filename.replace(".xlsx", ".csv"));
   }
 };
 
 // ── Stats Card ─────────────────────────────────────────────────────────────
-const StatCard = ({ icon: Icon, label, value, color, loading }) => (
+const StatCard = ({ icon: Icon, label, value, color, loading, isMobile }) => (
   <div
     style={{
       background: "rgba(255,255,255,0.04)",
       border: "1px solid rgba(255,255,255,0.08)",
       borderRadius: "16px",
-      padding: "20px 24px",
+      padding: isMobile ? "14px 16px" : "20px 24px",
       display: "flex",
       alignItems: "center",
-      gap: "16px",
+      gap: isMobile ? "12px" : "16px",
       backdropFilter: "blur(10px)",
     }}
   >
     <div
       style={{
-        width: "48px",
-        height: "48px",
+        width: isMobile ? "42px" : "48px",
+        height: isMobile ? "42px" : "48px",
         borderRadius: "12px",
         background: `rgba(${color},0.12)`,
         border: `1px solid rgba(${color},0.25)`,
@@ -79,13 +97,13 @@ const StatCard = ({ icon: Icon, label, value, color, loading }) => (
         flexShrink: 0,
       }}
     >
-      <Icon size={22} color={`rgb(${color})`} />
+      <Icon size={isMobile ? 18 : 22} color={`rgb(${color})`} />
     </div>
     <div>
-      <p style={{ color: "rgba(255,255,255,0.45)", fontSize: "12px", margin: "0 0 4px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+      <p style={{ color: "rgba(255,255,255,0.45)", fontSize: isMobile ? "10px" : "12px", margin: "0 0 4px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
         {label}
       </p>
-      <p style={{ color: "#fff", fontSize: "26px", fontWeight: "700", margin: 0 }}>
+      <p style={{ color: "#fff", fontSize: isMobile ? "22px" : "26px", fontWeight: "700", margin: 0 }}>
         {loading ? "—" : value}
       </p>
     </div>
@@ -93,9 +111,10 @@ const StatCard = ({ icon: Icon, label, value, color, loading }) => (
 );
 
 // ── Data Table ─────────────────────────────────────────────────────────────
-const DataTable = ({ columns, data, loading, error, onRefresh, onExportCSV, onExportExcel, searchQuery, onSearch }) => {
+const DataTable = ({ columns, data, loading, error, onRefresh, onExportCSV, onExportExcel, searchQuery, onSearch, onDelete, isMobile }) => {
   const [sortCol, setSortCol] = useState(null);
   const [sortDir, setSortDir] = useState("desc");
+  const [lightbox, setLightbox] = useState(null); // { src, type }
 
   const toggleSort = (col) => {
     if (sortCol === col) setSortDir((d) => (d === "asc" ? "desc" : "asc"));
@@ -117,12 +136,72 @@ const DataTable = ({ columns, data, loading, error, onRefresh, onExportCSV, onEx
     )
   );
 
+  const renderCell = (col, row) => {
+    const val = row[col.key];
+    if (col.key === "created_at") {
+      return val ? new Date(val).toLocaleString("en-IN") : "—";
+    }
+    if (col.key === "termsAgreed") {
+      return val ? (
+        <span style={{ color: "#4ade80", fontWeight: 700 }}>✅ Agreed</span>
+      ) : (
+        <span style={{ color: "#f87171" }}>✗ No</span>
+      );
+    }
+    if (col.key === "employeeCode") {
+      return val ? (
+        <span style={{ fontFamily: "monospace", color: "#4ade80", fontWeight: 700, letterSpacing: "0.05em", background: "rgba(74,222,128,0.1)", padding: "2px 8px", borderRadius: "6px" }}>
+          {val}
+        </span>
+      ) : "—";
+    }
+    if (col.key === "photo" || col.key === "signature") {
+      return val && val.startsWith("data:image") ? (
+        <button
+          onClick={() => setLightbox({ src: val, type: col.key })}
+          style={{
+            background: "rgba(59,130,246,0.15)",
+            border: "1px solid rgba(59,130,246,0.35)",
+            borderRadius: "6px",
+            color: "#93c5fd",
+            fontSize: "11px",
+            padding: "3px 10px",
+            cursor: "pointer",
+            fontFamily: "'Inter', sans-serif",
+          }}
+        >
+          View {col.key === "photo" ? "Photo" : "Signature"}
+        </button>
+      ) : "—";
+    }
+    return val ?? "—";
+  };
+
   return (
     <div>
+      {/* Lightbox overlay */}
+      {lightbox && (
+        <div
+          onClick={() => setLightbox(null)}
+          style={{
+            position: "fixed", inset: 0, background: "rgba(0,0,0,0.75)", zIndex: 1000,
+            display: "flex", alignItems: "center", justifyContent: "center", padding: "20px",
+          }}
+        >
+          <div style={{ background: "#1e293b", borderRadius: "16px", padding: "20px", maxWidth: "500px", width: "100%" }} onClick={(e) => e.stopPropagation()}>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "12px" }}>
+              <span style={{ color: "#fff", fontSize: "14px", fontWeight: 600, textTransform: "capitalize" }}>{lightbox.type}</span>
+              <button onClick={() => setLightbox(null)} style={{ background: "transparent", border: "none", color: "#94a3b8", cursor: "pointer", fontSize: "20px" }}>×</button>
+            </div>
+            <img src={lightbox.src} alt={lightbox.type} style={{ width: "100%", borderRadius: "8px", background: "#fff" }} />
+          </div>
+        </div>
+      )}
+
       {/* Table Toolbar */}
-      <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px", flexWrap: "wrap" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: isMobile ? "8px" : "12px", marginBottom: "16px", flexWrap: "wrap" }}>
         {/* Search */}
-        <div style={{ position: "relative", flex: 1, minWidth: "200px" }}>
+        <div style={{ position: "relative", flex: 1, minWidth: isMobile ? "100%" : "200px" }}>
           <Search size={15} color="rgba(255,255,255,0.3)" style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)" }} />
           <input
             value={searchQuery}
@@ -149,16 +228,18 @@ const DataTable = ({ columns, data, loading, error, onRefresh, onExportCSV, onEx
           disabled={loading}
           style={{
             display: "flex", alignItems: "center", gap: "6px",
-            padding: "10px 16px",
+            padding: isMobile ? "9px 12px" : "10px 16px",
             background: "rgba(255,255,255,0.06)",
             border: "1px solid rgba(255,255,255,0.1)",
             borderRadius: "10px",
             color: "rgba(255,255,255,0.7)",
-            fontSize: "13px",
+            fontSize: isMobile ? "12px" : "13px",
             fontWeight: "500",
             cursor: "pointer",
             fontFamily: "'Inter', sans-serif",
             transition: "all 0.15s",
+            width: isMobile ? "calc(50% - 4px)" : "auto",
+            justifyContent: "center",
           }}
         >
           <RefreshCw size={14} style={{ animation: loading ? "spin 1s linear infinite" : "none" }} />
@@ -171,16 +252,18 @@ const DataTable = ({ columns, data, loading, error, onRefresh, onExportCSV, onEx
           disabled={!data.length}
           style={{
             display: "flex", alignItems: "center", gap: "6px",
-            padding: "10px 16px",
+            padding: isMobile ? "9px 12px" : "10px 16px",
             background: "rgba(16,185,129,0.1)",
             border: "1px solid rgba(16,185,129,0.25)",
             borderRadius: "10px",
             color: "#10B981",
-            fontSize: "13px",
+            fontSize: isMobile ? "12px" : "13px",
             fontWeight: "500",
             cursor: data.length ? "pointer" : "not-allowed",
             opacity: data.length ? 1 : 0.4,
             fontFamily: "'Inter', sans-serif",
+            width: isMobile ? "calc(50% - 4px)" : "auto",
+            justifyContent: "center",
           }}
         >
           <Download size={14} />
@@ -193,16 +276,18 @@ const DataTable = ({ columns, data, loading, error, onRefresh, onExportCSV, onEx
           disabled={!data.length}
           style={{
             display: "flex", alignItems: "center", gap: "6px",
-            padding: "10px 16px",
+            padding: isMobile ? "9px 12px" : "10px 16px",
             background: "rgba(99,102,241,0.1)",
             border: "1px solid rgba(99,102,241,0.25)",
             borderRadius: "10px",
             color: "#818CF8",
-            fontSize: "13px",
+            fontSize: isMobile ? "12px" : "13px",
             fontWeight: "500",
             cursor: data.length ? "pointer" : "not-allowed",
             opacity: data.length ? 1 : 0.4,
             fontFamily: "'Inter', sans-serif",
+            width: isMobile ? "100%" : "auto",
+            justifyContent: "center",
           }}
         >
           <FileSpreadsheet size={14} />
@@ -218,7 +303,7 @@ const DataTable = ({ columns, data, loading, error, onRefresh, onExportCSV, onEx
 
       {/* Table Container */}
       <div style={{ overflowX: "auto", borderRadius: "14px", border: "1px solid rgba(255,255,255,0.07)" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "600px" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", minWidth: isMobile ? "520px" : "600px" }}>
           <thead>
             <tr style={{ background: "rgba(255,255,255,0.05)" }}>
               {columns.map((col) => (
@@ -226,10 +311,10 @@ const DataTable = ({ columns, data, loading, error, onRefresh, onExportCSV, onEx
                   key={col.key}
                   onClick={() => toggleSort(col.key)}
                   style={{
-                    padding: "12px 16px",
+                    padding: isMobile ? "10px 12px" : "12px 16px",
                     textAlign: "left",
                     color: "rgba(255,255,255,0.5)",
-                    fontSize: "11px",
+                    fontSize: isMobile ? "10px" : "11px",
                     fontWeight: "600",
                     textTransform: "uppercase",
                     letterSpacing: "0.7px",
@@ -247,6 +332,11 @@ const DataTable = ({ columns, data, loading, error, onRefresh, onExportCSV, onEx
                   </span>
                 </th>
               ))}
+              {onDelete && (
+                <th style={{ padding: isMobile ? "10px 12px" : "12px 16px", textAlign: "right", color: "rgba(255,255,255,0.5)", fontSize: isMobile ? "10px" : "11px", fontWeight: "600", textTransform: "uppercase", letterSpacing: "0.7px", borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
+                  Actions
+                </th>
+              )}
             </tr>
           </thead>
           <tbody>
@@ -285,18 +375,28 @@ const DataTable = ({ columns, data, loading, error, onRefresh, onExportCSV, onEx
                     <td
                       key={col.key}
                       style={{
-                        padding: "13px 16px",
+                        padding: isMobile ? "10px 12px" : "13px 16px",
                         color: col.key === "created_at" ? "rgba(255,255,255,0.4)" : "rgba(255,255,255,0.85)",
-                        fontSize: "13.5px",
+                        fontSize: isMobile ? "12.5px" : "13.5px",
                         borderBottom: "1px solid rgba(255,255,255,0.04)",
                         whiteSpace: col.key === "created_at" ? "nowrap" : "normal",
                       }}
                     >
-                      {col.key === "created_at"
-                        ? row[col.key] ? new Date(row[col.key]).toLocaleString("en-IN") : "—"
-                        : row[col.key] ?? "—"}
+                      {renderCell(col, row)}
                     </td>
                   ))}
+                  {onDelete && (
+                    <td style={{ padding: isMobile ? "10px 12px" : "13px 16px", textAlign: "right", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+                      <button
+                        onClick={() => onDelete(row)}
+                        style={{ background: "transparent", border: "1px solid rgba(239, 68, 68, 0.3)", color: "#ef4444", padding: isMobile ? "3px 7px" : "4px 8px", borderRadius: "6px", cursor: "pointer", fontSize: isMobile ? "11px" : "12px", transition: "all 0.2s" }}
+                        onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(239, 68, 68, 0.1)"; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  )}
                 </tr>
               ))
             )}
@@ -310,15 +410,25 @@ const DataTable = ({ columns, data, loading, error, onRefresh, onExportCSV, onEx
 // ── Main Dashboard ─────────────────────────────────────────────────────────
 const AdminDashboard = () => {
   const navigate = useNavigate();
+  const API_URL = process.env.REACT_APP_BACKEND_URL;
   const [activeTab, setActiveTab] = useState("applications");
+  const [isMobile, setIsMobile] = useState(
+    typeof window !== "undefined" ? window.innerWidth <= 768 : false
+  );
 
   const [applications, setApplications] = useState([]);
-  const [profileSetups, setProfileSetups] = useState([]);
+  const [completeProfiles, setCompleteProfiles] = useState([]);
   const [passkeyOrders, setPasskeyOrders] = useState([]);
 
-  const [loadingMap, setLoadingMap] = useState({ applications: true, profile_setups: true, passkey_orders: true });
+  const [loadingMap, setLoadingMap] = useState({ applications: true, passkey_orders: true, complete_profiles: true });
   const [errorMap, setErrorMap] = useState({});
-  const [searchMap, setSearchMap] = useState({ applications: "", profile_setups: "", passkey_orders: "" });
+  const [searchMap, setSearchMap] = useState({ applications: "", passkey_orders: "", complete_profiles: "" });
+
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
 
   // Auth guard
   useEffect(() => {
@@ -327,6 +437,16 @@ const AdminDashboard = () => {
       navigate("/admin");
     }
   }, [navigate]);
+
+  const fetchDeletedRecords = useCallback(async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/deleted-records`);
+      if (!response.ok) return {};
+      return await response.json();
+    } catch {
+      return {};
+    }
+  }, [API_URL]);
 
   const fetchTable = useCallback(async (table, setter) => {
     setLoadingMap((prev) => ({ ...prev, [table]: true }));
@@ -337,19 +457,99 @@ const AdminDashboard = () => {
         .select("*")
         .order("created_at", { ascending: false });
       if (error) throw error;
-      setter(data || []);
+
+      let rows = data || [];
+      if (table === "passkey_orders") {
+        const deleted = await fetchDeletedRecords();
+        const deletedIds = new Set((deleted?.[table] || []).map((id) => String(id)));
+        rows = rows.filter((row) => !deletedIds.has(String(row.id)));
+      }
+
+      setter(rows);
     } catch (err) {
       setErrorMap((prev) => ({ ...prev, [table]: err.message || "Failed to load data" }));
     } finally {
       setLoadingMap((prev) => ({ ...prev, [table]: false }));
     }
-  }, []);
+  }, [fetchDeletedRecords]);
+
+  const fetchApplications = useCallback(async () => {
+    setLoadingMap((prev) => ({ ...prev, applications: true }));
+    setErrorMap((prev) => ({ ...prev, applications: null }));
+    try {
+      const response = await fetch(`${API_URL}/api/applications`);
+      if (!response.ok) throw new Error("Failed to load applications data");
+      const data = await response.json();
+      setApplications((data || []).sort((a, b) => new Date(b.created_at) - new Date(a.created_at)));
+    } catch (err) {
+      setErrorMap((prev) => ({ ...prev, applications: err.message || "Failed to load data" }));
+    } finally {
+      setLoadingMap((prev) => ({ ...prev, applications: false }));
+    }
+  }, [API_URL]);
+
+  const handleDelete = async (tabId, row) => {
+    if (!window.confirm("Are you sure you want to delete this record?")) return;
+    
+    try {
+      const response = await fetch(`${API_URL}/api/delete-record`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          tab: tabId,
+          id: row.id,
+          employeeCode: row.employeeCode,
+          email: row.email,
+        })
+      });
+      const result = await response.json();
+      if (!response.ok || !result.success) {
+        throw new Error(result.detail || "Failed to delete record from backend.");
+      }
+
+      if (tabId === "complete_profiles" && row.email) {
+        try {
+          const stored = localStorage.getItem("panoptyc_employee");
+          if (stored) {
+            const session = JSON.parse(stored);
+            if ((session?.email || "").toLowerCase() === row.email.toLowerCase()) {
+              localStorage.removeItem("panoptyc_employee");
+            }
+          }
+        } catch {
+          // Ignore malformed local session data.
+        }
+      }
+      
+      // Refresh the specific table
+      if (tabId === "applications") fetchApplications();
+      if (tabId === "passkey_orders") fetchTable("passkey_orders", setPasskeyOrders);
+      if (tabId === "complete_profiles") fetchCompleteProfiles();
+    } catch (err) {
+      alert("Error deleting record: " + err.message);
+    }
+  };
+
+  const fetchCompleteProfiles = useCallback(async () => {
+    setLoadingMap((prev) => ({ ...prev, complete_profiles: true }));
+    setErrorMap((prev) => ({ ...prev, complete_profiles: null }));
+    try {
+      const response = await fetch(`${API_URL}/api/complete-profiles`);
+      if (!response.ok) throw new Error("Failed to load local data");
+      const data = await response.json();
+      setCompleteProfiles((data || []).sort((a,b) => new Date(b.created_at) - new Date(a.created_at)));
+    } catch (err) {
+      setErrorMap((prev) => ({ ...prev, complete_profiles: err.message || "Failed to load data" }));
+    } finally {
+      setLoadingMap((prev) => ({ ...prev, complete_profiles: false }));
+    }
+  }, [API_URL]);
 
   useEffect(() => {
-    fetchTable("applications", setApplications);
-    fetchTable("profile_setups", setProfileSetups);
+    fetchApplications();
     fetchTable("passkey_orders", setPasskeyOrders);
-  }, [fetchTable]);
+    fetchCompleteProfiles();
+  }, [fetchApplications, fetchTable, fetchCompleteProfiles]);
 
   const handleLogout = () => {
     sessionStorage.removeItem("admin_token");
@@ -367,6 +567,7 @@ const AdminDashboard = () => {
       columns: [
         { key: "full_name", label: "Full Name" },
         { key: "phone", label: "Phone" },
+        { key: "email", label: "Email" },
         { key: "city", label: "City" },
         { key: "created_at", label: "Submitted At" },
       ],
@@ -374,18 +575,26 @@ const AdminDashboard = () => {
       xlsxFile: "applications.xlsx",
     },
     {
-      id: "profile_setups",
-      label: "Profile Setups",
-      icon: UserCircle,
-      data: profileSetups,
-      color: "168,85,247",
+      id: "complete_profiles",
+      label: "Complete Profiles",
+      icon: UserCheck,
+      data: completeProfiles,
+      color: "59,130,246",
       columns: [
+        { key: "employeeCode", label: "Employee Code" },
+        { key: "firstName", label: "First Name" },
+        { key: "lastName", label: "Last Name" },
         { key: "email", label: "Email" },
-        { key: "password", label: "Password" },
+        { key: "mobile", label: "Mobile" },
+        { key: "education", label: "Education" },
+        { key: "address", label: "Address" },
+        { key: "photo", label: "Photo" },
+        { key: "signature", label: "Signature" },
+        { key: "termsAgreed", label: "Terms Agreed" },
         { key: "created_at", label: "Submitted At" },
       ],
-      csvFile: "profile_setups.csv",
-      xlsxFile: "profile_setups.xlsx",
+      csvFile: "complete_profiles.csv",
+      xlsxFile: "complete_profiles.xlsx",
     },
     {
       id: "passkey_orders",
@@ -414,7 +623,7 @@ const AdminDashboard = () => {
   // Latest submission time across all
   const allTimestamps = [
     ...applications.map((r) => r.created_at),
-    ...profileSetups.map((r) => r.created_at),
+    ...completeProfiles.map((r) => r.created_at),
     ...passkeyOrders.map((r) => r.created_at),
   ].filter(Boolean).sort().reverse();
 
@@ -451,24 +660,24 @@ const AdminDashboard = () => {
           background: "rgba(10,15,30,0.9)",
           backdropFilter: "blur(20px)",
           borderBottom: "1px solid rgba(255,255,255,0.07)",
-          padding: "0 32px",
+          padding: isMobile ? "0 14px" : "0 32px",
         }}
       >
-        <div style={{ maxWidth: "1400px", margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: "64px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+        <div style={{ maxWidth: "1400px", margin: "0 auto", display: "flex", alignItems: isMobile ? "stretch" : "center", justifyContent: "space-between", height: isMobile ? "auto" : "64px", flexDirection: isMobile ? "column" : "row", gap: isMobile ? "10px" : 0, padding: isMobile ? "10px 0" : 0 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: isMobile ? "10px" : "16px", justifyContent: isMobile ? "space-between" : "flex-start", width: isMobile ? "100%" : "auto" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <Shield size={20} color="#EF4444" />
-              <span style={{ fontWeight: "700", fontSize: "16px", color: "#fff" }}>Admin Dashboard</span>
+              <Shield size={isMobile ? 18 : 20} color="#EF4444" />
+              <span style={{ fontWeight: "700", fontSize: isMobile ? "15px" : "16px", color: "#fff" }}>Admin Dashboard</span>
             </div>
-            <span style={{ color: "rgba(255,255,255,0.15)", fontSize: "18px" }}>|</span>
+            {!isMobile && <span style={{ color: "rgba(255,255,255,0.15)", fontSize: "18px" }}>|</span>}
             <img
               src="https://customer-assets.emergentagent.com/job_remote-lead-hiring/artifacts/yyk8ba47_Panoptyc-Logo-HiRes.jpg"
               alt="Panoptyc"
-              style={{ height: "24px", width: "auto", objectFit: "contain", opacity: 0.8 }}
+              style={{ height: isMobile ? "20px" : "24px", width: "auto", objectFit: "contain", opacity: 0.8 }}
             />
           </div>
 
-          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: isMobile ? "8px" : "12px", flexWrap: isMobile ? "wrap" : "nowrap", width: isMobile ? "100%" : "auto" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#10B981", fontSize: "12px", fontWeight: "500" }}>
               <div style={{ width: "7px", height: "7px", background: "#10B981", borderRadius: "50%", animation: "pulse 2s infinite" }} />
               Live
@@ -477,14 +686,16 @@ const AdminDashboard = () => {
               onClick={() => navigate("/")}
               style={{
                 display: "flex", alignItems: "center", gap: "6px",
-                padding: "8px 14px",
+                padding: isMobile ? "8px 10px" : "8px 14px",
                 background: "rgba(255,255,255,0.05)",
                 border: "1px solid rgba(255,255,255,0.1)",
                 borderRadius: "8px",
                 color: "rgba(255,255,255,0.6)",
-                fontSize: "13px",
+                fontSize: isMobile ? "12px" : "13px",
                 cursor: "pointer",
                 fontFamily: "'Inter', sans-serif",
+                flex: isMobile ? 1 : "none",
+                justifyContent: "center",
               }}
             >
               <ArrowLeft size={13} />
@@ -494,15 +705,17 @@ const AdminDashboard = () => {
               onClick={handleLogout}
               style={{
                 display: "flex", alignItems: "center", gap: "6px",
-                padding: "8px 14px",
+                padding: isMobile ? "8px 10px" : "8px 14px",
                 background: "rgba(239,68,68,0.1)",
                 border: "1px solid rgba(239,68,68,0.25)",
                 borderRadius: "8px",
                 color: "#EF4444",
-                fontSize: "13px",
+                fontSize: isMobile ? "12px" : "13px",
                 fontWeight: "500",
                 cursor: "pointer",
                 fontFamily: "'Inter', sans-serif",
+                flex: isMobile ? 1 : "none",
+                justifyContent: "center",
               }}
             >
               <LogOut size={13} />
@@ -513,37 +726,42 @@ const AdminDashboard = () => {
       </div>
 
       {/* ── Main Content ── */}
-      <div style={{ maxWidth: "1400px", margin: "0 auto", padding: "32px" }}>
+      <div style={{ maxWidth: "1400px", margin: "0 auto", padding: isMobile ? "16px 12px 20px" : "32px" }}>
 
         {/* ── Stats Row ── */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "16px", marginBottom: "32px" }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fit, minmax(220px, 1fr))", gap: "16px", marginBottom: isMobile ? "20px" : "32px" }}>
           <StatCard
             icon={Users}
             label="Total Applications"
             value={applications.length}
             color="239,68,68"
             loading={loadingMap.applications}
+            isMobile={isMobile}
           />
-          <StatCard
-            icon={UserCircle}
-            label="Profile Setups"
-            value={profileSetups.length}
-            color="168,85,247"
-            loading={loadingMap.profile_setups}
-          />
+
           <StatCard
             icon={Package}
             label="Passkey Orders"
             value={passkeyOrders.length}
             color="16,185,129"
             loading={loadingMap.passkey_orders}
+            isMobile={isMobile}
+          />
+          <StatCard
+            icon={UserCheck}
+            label="Complete Profiles"
+            value={completeProfiles.length}
+            color="59,130,246"
+            loading={loadingMap.complete_profiles}
+            isMobile={isMobile}
           />
           <StatCard
             icon={TrendingUp}
             label="Total Submissions"
-            value={applications.length + profileSetups.length + passkeyOrders.length}
+            value={applications.length + completeProfiles.length + passkeyOrders.length}
             color="251,191,36"
-            loading={loadingMap.applications || loadingMap.profile_setups || loadingMap.passkey_orders}
+            loading={loadingMap.applications || loadingMap.complete_profiles || loadingMap.passkey_orders}
+            isMobile={isMobile}
           />
         </div>
 
@@ -555,14 +773,15 @@ const AdminDashboard = () => {
             gap: "8px",
             color: "rgba(255,255,255,0.35)",
             fontSize: "12px",
-            marginBottom: "24px",
+            marginBottom: isMobile ? "14px" : "24px",
+            flexWrap: isMobile ? "wrap" : "nowrap",
           }}
         >
           <Clock size={13} />
           <span>Last activity: <span style={{ color: "rgba(255,255,255,0.55)" }}>{lastActivity}</span></span>
           <span style={{ margin: "0 8px", color: "rgba(255,255,255,0.1)" }}>•</span>
-          <Database size={13} />
-          <span>Supabase Postgres</span>
+          <Server size={13} />
+          <span>Hybrid DB System</span>
         </div>
 
         {/* ── Tabs ── */}
@@ -573,9 +792,10 @@ const AdminDashboard = () => {
             background: "rgba(255,255,255,0.04)",
             border: "1px solid rgba(255,255,255,0.08)",
             borderRadius: "14px",
-            padding: "6px",
-            marginBottom: "24px",
-            width: "fit-content",
+            padding: isMobile ? "4px" : "6px",
+            marginBottom: isMobile ? "16px" : "24px",
+            width: isMobile ? "100%" : "fit-content",
+            overflowX: isMobile ? "auto" : "visible",
           }}
         >
           {tabs.map((tab) => {
@@ -589,20 +809,21 @@ const AdminDashboard = () => {
                   display: "flex",
                   alignItems: "center",
                   gap: "8px",
-                  padding: "10px 20px",
+                  padding: isMobile ? "9px 12px" : "10px 20px",
                   borderRadius: "10px",
                   border: "none",
                   background: isActive
                     ? `rgba(${tab.color},0.15)`
                     : "transparent",
                   color: isActive ? `rgb(${tab.color})` : "rgba(255,255,255,0.45)",
-                  fontSize: "14px",
+                  fontSize: isMobile ? "12px" : "14px",
                   fontWeight: isActive ? "600" : "400",
                   cursor: "pointer",
                   fontFamily: "'Inter', sans-serif",
                   transition: "all 0.15s",
                   outline: isActive ? `1px solid rgba(${tab.color},0.3)` : "none",
                   whiteSpace: "nowrap",
+                  flexShrink: 0,
                 }}
               >
                 <TabIcon size={15} />
@@ -633,17 +854,17 @@ const AdminDashboard = () => {
               background: "rgba(255,255,255,0.03)",
               border: "1px solid rgba(255,255,255,0.08)",
               borderRadius: "20px",
-              padding: "28px",
+              padding: isMobile ? "14px" : "28px",
               backdropFilter: "blur(10px)",
             }}
           >
             {/* Table Header */}
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "20px", flexWrap: "wrap", gap: "12px" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "12px", minWidth: 0 }}>
                 <div
                   style={{
-                    width: "40px",
-                    height: "40px",
+                    width: isMobile ? "34px" : "40px",
+                    height: isMobile ? "34px" : "40px",
                     borderRadius: "10px",
                     background: `rgba(${currentTab.color},0.12)`,
                     border: `1px solid rgba(${currentTab.color},0.25)`,
@@ -652,14 +873,14 @@ const AdminDashboard = () => {
                     justifyContent: "center",
                   }}
                 >
-                  <currentTab.icon size={18} color={`rgb(${currentTab.color})`} />
+                  <currentTab.icon size={isMobile ? 16 : 18} color={`rgb(${currentTab.color})`} />
                 </div>
                 <div>
-                  <h2 style={{ color: "#fff", fontSize: "18px", fontWeight: "700", margin: "0 0 2px" }}>
+                  <h2 style={{ color: "#fff", fontSize: isMobile ? "16px" : "18px", fontWeight: "700", margin: "0 0 2px" }}>
                     {currentTab.label}
                   </h2>
-                  <p style={{ color: "rgba(255,255,255,0.35)", fontSize: "12px", margin: 0 }}>
-                    {currentTab.data.length} total records · supabase/{activeTab}
+                  <p style={{ color: "rgba(255,255,255,0.35)", fontSize: isMobile ? "11px" : "12px", margin: 0 }}>
+                    {currentTab.data.length} total records · {activeTab === "complete_profiles" ? "node/local" : `supabase/${activeTab}`}
                   </p>
                 </div>
               </div>
@@ -679,14 +900,16 @@ const AdminDashboard = () => {
               loading={loadingMap[activeTab]}
               error={errorMap[activeTab]}
               onRefresh={() => {
-                if (activeTab === "applications") fetchTable("applications", setApplications);
-                if (activeTab === "profile_setups") fetchTable("profile_setups", setProfileSetups);
+                if (activeTab === "applications") fetchApplications();
                 if (activeTab === "passkey_orders") fetchTable("passkey_orders", setPasskeyOrders);
+                if (activeTab === "complete_profiles") fetchCompleteProfiles();
               }}
               onExportCSV={() => exportCSV(currentTab.data, currentTab.csvFile)}
               onExportExcel={() => exportExcel(currentTab.data, currentTab.xlsxFile)}
               searchQuery={searchMap[activeTab]}
               onSearch={(q) => setSearchMap((prev) => ({ ...prev, [activeTab]: q }))}
+              onDelete={(row) => handleDelete(activeTab, row)}
+              isMobile={isMobile}
             />
           </div>
         )}

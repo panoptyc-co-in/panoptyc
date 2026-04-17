@@ -26,10 +26,10 @@ const WhyPanoptyc = () => {
             return (
               <div
                 key={i}
-                className="p-8 md:p-10 rounded-[24px] bg-[#F8FAFC] flex flex-col h-full transition-all duration-300 hover:shadow-sm border border-transparent hover:border-gray-100"
+                className="group p-8 md:p-10 rounded-[24px] bg-[#F8FAFC] hover:bg-white flex flex-col h-full transition-all duration-500 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.08)] border border-transparent"
               >
-                <div className="w-[48px] h-[48px] rounded-[14px] bg-[#FEF2F2] flex items-center justify-center mb-6">
-                  <Icon className="w-[22px] h-[22px] text-[#ef4444]" strokeWidth={1.5} />
+                <div className="w-[48px] h-[48px] rounded-[14px] bg-[#FEF2F2] group-hover:bg-[#ef4444] flex items-center justify-center mb-6 transition-colors duration-500">
+                  <Icon className="w-[22px] h-[22px] text-[#ef4444] group-hover:text-white transition-colors duration-500" strokeWidth={1.5} />
                 </div>
                 
                 <h3 className="text-[18px] md:text-[20px] font-bold mb-3 text-[#0F172A] leading-snug">

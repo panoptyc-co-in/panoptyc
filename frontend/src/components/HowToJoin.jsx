@@ -32,6 +32,7 @@ const HowToJoin = ({ onApply }) => {
   return (
     <section className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
         <div className="text-center mb-20">
           <span className="inline-block text-[11px] font-bold uppercase tracking-[0.15em] mb-4 text-[#ef4444]">
             GETTING STARTED
@@ -44,37 +45,50 @@ const HowToJoin = ({ onApply }) => {
           </p>
         </div>
 
-        <div className="relative max-w-6xl mx-auto">
-          {/* Connecting Red Line (desktop only) */}
-          <div className="hidden md:block absolute top-[40px] left-[12.5%] right-[12.5%] h-[1px] bg-red-200 z-0"></div>
+        {/* Steps */}
+        <div className="relative max-w-5xl mx-auto">
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-x-6 gap-y-12 relative z-10">
+          {/* Connecting line — runs between left edge of first icon and right edge of last icon,
+              positioned at the BOTTOM of the 80px icon boxes */}
+          <div
+            className="hidden md:block absolute z-0"
+            style={{
+              top: "79px",          /* bottom of 80px icon box */
+              left: "calc(12.5%)",  /* start at center of col 1 */
+              right: "calc(12.5%)", /* end at center of col 4 */
+              height: "1.5px",
+              background: "#fecaca" /* red-200 */
+            }}
+          />
+
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-x-8 gap-y-12 relative z-10">
             {steps.map((stepItem, idx) => {
               const IconComponent = stepItem.Icon;
               return (
                 <div key={idx} className="flex flex-col items-center text-center">
-                  {/* Icon Box */}
-                  <div 
-                    className="w-[80px] h-[80px] bg-white rounded-[24px] flex items-center justify-center mb-6 z-10 border-[1.5px] border-red-100"
+
+                  {/* Icon Box — white bg, red border, rounded */}
+                  <div
+                    className="w-[80px] h-[80px] bg-white rounded-[20px] flex items-center justify-center mb-5 z-10 border border-red-100 shadow-sm"
                   >
-                    <IconComponent 
-                      className="w-[30px] h-[30px] text-[#ef4444]" 
-                      strokeWidth={1.5} 
+                    <IconComponent
+                      className="w-[28px] h-[28px] text-[#ef4444]"
+                      strokeWidth={1.5}
                     />
                   </div>
-                  
-                  {/* Step Num */}
-                  <h4 className="text-[11px] font-bold tracking-[0.08em] mb-2 uppercase text-[#ef4444]">
+
+                  {/* STEP XX */}
+                  <span className="text-[10px] font-bold tracking-[0.12em] uppercase text-[#ef4444] mb-1.5">
                     STEP {stepItem.step}
-                  </h4>
-                  
+                  </span>
+
                   {/* Title */}
-                  <h3 className="text-[15px] font-bold text-[#0F172A] mb-2.5">
+                  <h3 className="text-[15px] font-bold text-[#0F172A] mb-2">
                     {stepItem.title}
                   </h3>
-                  
+
                   {/* Description */}
-                  <p className="text-[13px] text-[#64748B] leading-[1.6] px-2 md:px-0 lg:px-3">
+                  <p className="text-[13px] text-[#64748B] leading-[1.65] px-1">
                     {stepItem.description}
                   </p>
                 </div>
