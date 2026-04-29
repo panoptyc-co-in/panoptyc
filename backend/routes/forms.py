@@ -157,6 +157,103 @@ def _save_json_dict(file_name_or_path: str, payload):
             json.dump(payload, f, indent=4)
 
 
+def _complete_profile_to_db(row: dict):
+    return {
+        "first_name": row.get("firstName", ""),
+        "last_name": row.get("lastName", ""),
+        "email": row.get("email", ""),
+        "mobile": row.get("mobile", ""),
+        "address": row.get("address", ""),
+        "education": row.get("education", ""),
+        "photo": row.get("photo", "") or "",
+        "employee_code": row.get("employeeCode", ""),
+        "signature": row.get("signature", "") or "",
+        "terms_agreed": bool(row.get("termsAgreed", False)),
+    }
+
+
+def _complete_profile_from_db(row: dict):
+    return {
+        "id": row.get("id", ""),
+        "firstName": row.get("first_name", ""),
+        "lastName": row.get("last_name", ""),
+        "email": row.get("email", ""),
+        "mobile": row.get("mobile", ""),
+        "address": row.get("address", ""),
+        "education": row.get("education", ""),
+        "photo": row.get("photo", "") or "",
+        "employeeCode": row.get("employee_code", ""),
+        "signature": row.get("signature", "") or "",
+        "termsAgreed": bool(row.get("terms_agreed", False)),
+        "created_at": row.get("created_at", ""),
+    }
+
+
+def _merge_complete_profiles(local_rows, remote_rows):
+    merged = {}
+    for row in local_rows + remote_rows:
+        key = str(row.get("employeeCode") or row.get("email") or row.get("id") or uuid.uuid4())
+        existing = merged.get(key, {})
+        merged[key] = {**existing, **row}
+
+    deleted_data = _load_json_dict("deleted_records.json", {})
+    deleted_emails = {
+        str(item).strip().lower()
+        for item in deleted_data.get("profile_setups", [])
+    }
+
+    rows = [
+        row
+        for row in merged.values()
+        if str(row.get("email", "")).strip().lower() not in deleted_emails
+    ]
+    rows.sort(key=lambda item: str(item.get("created_at") or ""), reverse=True)
+    return rows
+
+
+def _load_complete_profiles():
+    local_rows = _load_json_list("complete_profiles.json")
+    remote_rows = []
+
+    if supabase is not None:
+        try:
+            result = supabase.table("complete_profiles").select("*").order("created_at", desc=True).execute()
+            remote_rows = [_complete_profile_from_db(row) for row in (result.data or [])]
+        except Exception:
+            remote_rows = []
+
+    return _merge_complete_profiles(local_rows, remote_rows)
+
+
+def _upsert_local_complete_profile(entry: dict):
+    data_list = _load_json_list("complete_profiles.json")
+    employee_code = entry.get("employeeCode")
+    email = str(entry.get("email", "")).strip().lower()
+
+    existing_index = next(
+        (
+            i
+            for i, item in enumerate(data_list)
+            if (
+                employee_code
+                and item.get("employeeCode") == employee_code
+            )
+            or (
+                email
+                and str(item.get("email", "")).strip().lower() == email
+            )
+        ),
+        -1,
+    )
+
+    if existing_index >= 0:
+        data_list[existing_index] = entry
+    else:
+        data_list.append(entry)
+
+    _save_json_list("complete_profiles.json", data_list)
+
+
 # ---------- Submit Application ----------
 
 @router.post("/api/submit-application")
@@ -320,7 +417,7 @@ async def employee_login(form: ProfileSetupForm):
         address = ""
         education = ""
         photo = ""
-        profiles = _load_json_list("complete_profiles.json")
+        profiles = _load_complete_profiles()
         emp = next((p for p in profiles if p.get("email") == form.email), None)
         if emp:
             employee_code = emp.get("employeeCode", "")
@@ -376,25 +473,31 @@ async def submit_profile_setup(form: ProfileSetupForm):
 
 @router.post("/api/submit-complete-profile")
 async def submit_complete_profile(form: CompleteProfileForm):
-    """Save complete profile form data to local JSON"""
+    """Save complete profile form data to Supabase with local JSON fallback."""
     try:
-        data_list = _load_json_list("complete_profiles.json")
-                    
-        new_entry = form.dict()
+        new_entry = form.model_dump()
+        new_entry["email"] = new_entry.get("email", "").strip()
+        new_entry["employeeCode"] = new_entry.get("employeeCode", "").strip().upper()
         new_entry["created_at"] = datetime.now().isoformat()
-        data_list.append(new_entry)
-        
-        _save_json_list("complete_profiles.json", data_list)
-            
+
+        if supabase is not None:
+            try:
+                supabase.table("complete_profiles").insert(_complete_profile_to_db(new_entry)).execute()
+            except Exception:
+                # Keep registration working if the Supabase table is missing or temporarily unavailable.
+                pass
+
+        _upsert_local_complete_profile(new_entry)
+
         return {"success": True, "message": "Profile details saved successfully!", "employeeCode": form.employeeCode}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to save complete profile: {str(e)}")
 
 @router.get("/api/complete-profiles")
 async def get_complete_profiles():
-    """Get all complete profiles from JSON"""
+    """Get all complete profiles from Supabase merged with local fallback data."""
     try:
-        return _load_json_list("complete_profiles.json")
+        return _load_complete_profiles()
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -449,6 +552,15 @@ async def delete_record(req: DeleteRecordForm):
                 if target_email:
                     try:
                         supabase.table("profile_setups").delete().eq("email", target_email).execute()
+                    except:
+                        pass
+
+                if supabase is not None:
+                    try:
+                        if req.employeeCode:
+                            supabase.table("complete_profiles").delete().eq("employee_code", req.employeeCode).execute()
+                        elif target_email:
+                            supabase.table("complete_profiles").delete().eq("email", target_email).execute()
                     except:
                         pass
 
