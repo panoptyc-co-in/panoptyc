@@ -475,7 +475,7 @@ async def submit_profile_setup(form: ProfileSetupForm):
 async def submit_complete_profile(form: CompleteProfileForm):
     """Save complete profile form data to Supabase with local JSON fallback."""
     try:
-        new_entry = form.model_dump()
+        new_entry = form.model_dump() if hasattr(form, "model_dump") else form.dict()
         new_entry["email"] = new_entry.get("email", "").strip()
         new_entry["employeeCode"] = new_entry.get("employeeCode", "").strip().upper()
         new_entry["created_at"] = datetime.now().isoformat()

@@ -72,8 +72,18 @@ CREATE POLICY "Allow anon insert profile_setups"
 CREATE POLICY "Allow anon insert passkey_orders"
   ON passkey_orders FOR INSERT TO anon WITH CHECK (true);
 
-CREATE POLICY "Allow anon insert complete_profiles"
-  ON complete_profiles FOR INSERT TO anon WITH CHECK (true);
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'complete_profiles'
+      AND policyname = 'Allow anon insert complete_profiles'
+  ) THEN
+    CREATE POLICY "Allow anon insert complete_profiles"
+      ON complete_profiles FOR INSERT TO anon WITH CHECK (true);
+  END IF;
+END $$;
 
 -- Allow anonymous SELECT (admin dashboard reads via anon key)
 CREATE POLICY "Allow anon select applications"
@@ -85,12 +95,32 @@ CREATE POLICY "Allow anon select profile_setups"
 CREATE POLICY "Allow anon select passkey_orders"
   ON passkey_orders FOR SELECT TO anon USING (true);
 
-CREATE POLICY "Allow anon select complete_profiles"
-  ON complete_profiles FOR SELECT TO anon USING (true);
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'complete_profiles'
+      AND policyname = 'Allow anon select complete_profiles'
+  ) THEN
+    CREATE POLICY "Allow anon select complete_profiles"
+      ON complete_profiles FOR SELECT TO anon USING (true);
+  END IF;
+END $$;
 
 -- Allow admin delete calls from the backend anon client.
-CREATE POLICY "Allow anon delete complete_profiles"
-  ON complete_profiles FOR DELETE TO anon USING (true);
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'complete_profiles'
+      AND policyname = 'Allow anon delete complete_profiles'
+  ) THEN
+    CREATE POLICY "Allow anon delete complete_profiles"
+      ON complete_profiles FOR DELETE TO anon USING (true);
+  END IF;
+END $$;
 
 -- ============================================================
 -- Existing Project Migration (Run once if table already exists)
