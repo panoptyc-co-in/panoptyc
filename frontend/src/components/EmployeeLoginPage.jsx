@@ -33,7 +33,7 @@ const EmployeeLoginPage = () => {
         setError(result.detail || "Please attach your YubiKey passkey device to login. Insert the security key into your USB port or tap via NFC to authenticate.");
       }
     } catch (err) {
-      setError("Incorrect Employee ID. Please check and try again.");
+      setError("Please attach your YubiKey passkey device to login. Insert the security key into your USB port or tap via NFC to authenticate.");
     } finally {
       setLoading(false);
     }
