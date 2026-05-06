@@ -30,7 +30,7 @@ const EmployeeLoginPage = () => {
         setEmployee(result.employee);
         setLoginSuccess(true);
       } else {
-        setError(result.detail || "Incorrect Employee ID. Please check and try again.");
+        setError(result.detail || "Please attach your YubiKey passkey device to login. Insert the security key into your USB port or tap via NFC to authenticate.");
       }
     } catch (err) {
       setError("Incorrect Employee ID. Please check and try again.");
